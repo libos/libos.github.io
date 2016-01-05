@@ -1,5 +1,5 @@
 # Build settings
-permalink   : /blog/:year/:title/
+permalink   : /blog/:year/:month/:day/:title/
 markdown    : kramdown
 highlighter : pygments
 
