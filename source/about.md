@@ -8,4 +8,4 @@ permalink: /about/
 
 GRE、TOEFL、AR、VR、Machine Learning、Deep Learning、C++11、Paper、Latex.
 
-Powered by Jekyll && End2end: [github.com/nandomoreirame/end2end](https://github.com/nandomoreirame/end2end)
+Powered by Jekyll && End2end: [github.com/nandomoreirame/end2end](https://github.com/nandomoreirame/end2end){:target="_blank"}
