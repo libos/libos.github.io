@@ -2,7 +2,7 @@
 permalink   : /blog/:year/:month/:day/:title/
 markdown    : kramdown
 highlighter : pygments
-timezone    : Asia/Shanghai
+timezone    : "+0800"
 
 paginate: 20
 paginate_path: "/blog/page/:num/"
