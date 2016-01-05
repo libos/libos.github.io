@@ -37,6 +37,7 @@ task :publish => [:generate] do
     pwd = Dir.pwd
     Dir.chdir tmp
 
+    system "ssh-add ~/.ssh/id_rsa"
     system "git init"
     system "git checkout --orphan #{GITHUB_REPO_BRANCH}"
     system "git add ."
