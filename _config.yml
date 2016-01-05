@@ -14,29 +14,28 @@ sass:
   style: compressed # expanded
 
 # SEO settings
-title: end2end
-description: "A free Jekyll theme for download"
-keywords: "Jekyll, theme, free, download, SEO, blog, web"
-url: http://nandomoreira.me
-baseurl: "/end2end"
-# baseurl: ""
+title: "Libo's Blog"
+description: "Libo Blog"
+keywords: "AR,VR,DP,Machine Learning"
+url: http://next.sh
+# baseurl: "/end2end"
+baseurl: ""
 
 # google_analytics: UA-52446115-1
-repo: http://github.com/nandomoreirame/end2end
-disqus_shortname: "fernandomoreira"
+repo: https://github.com/libos/libos.github.io
+disqus_shortname: "libos"
 
 # Author settings
 author:
-  name      : Fernando Moreira
-  job       : Frontend Engineer
-  bio       : "Enthusiast performance, responsive design and usability, always looking for the best project and good coffee."
+  name      : Libo Liu
+  job       : Freelance
+  bio       : "Freelance"
   thumb     : /images/author.jpg
-  email     : nandomoreira.me@gmail.com
-  url       : http://nandomoreira.me
-  github    : http://github.com/nandomoreirame
-  twitter   : http://twitter.com/nandomoreirame
-  facebook  : http://facebook.com/fernando.dev
-  linkedin  : http://linkedin.com/in/nandomoreirame
+  email     : llb0536@gmail.com
+  url       : http://next.sh
+  github    : http://github.com/libos
+  twitter   : http://twitter.com/liberliu
+  facebook  : http://facebook.com/gslipt
 
 # navbar pages
 navbar:
