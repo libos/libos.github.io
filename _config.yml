@@ -3,7 +3,7 @@ permalink   : /blog/:year/:title/
 markdown    : kramdown
 highlighter : pygments
 
-paginate: 3
+paginate: 20
 paginate_path: "/blog/page/:num/"
 comments: true
 
@@ -21,15 +21,14 @@ url: http://next.sh
 # baseurl: "/end2end"
 baseurl: ""
 
-# google_analytics: UA-52446115-1
 repo: https://github.com/libos/libos.github.io
 disqus_shortname: "libos"
 
 # Author settings
 author:
-  name      : Libo Liu
-  job       : Freelance
-  bio       : "Freelance"
+  name      : Libo ♂
+  job       : freelance
+  bio       : "The first step in solving any problem is recognizing there is one."
   thumb     : /images/author.jpg
   email     : llb0536@gmail.com
   url       : http://next.sh
