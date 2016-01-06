@@ -2,7 +2,7 @@
 layout: post
 title: "A whole new start"
 description: "I am so happy, my dear friend, so absorbed in the exquisite sense of mere tranquil existence, that I neglect my talents."
-date: 2016-01-06 21:41:47
+date: 2016-01-05 21:41:47
 comments: true
 description: "A whole new start"
 keywords: "welcome, wonderful, jekyll, friend"
