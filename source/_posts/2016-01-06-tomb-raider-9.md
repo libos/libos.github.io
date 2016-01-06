@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Tomb Raider 9"
-permalink: tomb-raider-9
 date: 2016-01-06 20:37:52
 comments: true
 description: "Tomb Raider 9"
