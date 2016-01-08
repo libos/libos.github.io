@@ -5,10 +5,11 @@ date: 2016-01-08 23:49:48
 comments: true
 description: "The Andromeda Strain 2008"
 keywords: "Andromeda Strain,2008,Sci-Fi,Movie"
-categories:"Sci-Fi"
+categories: movie
 
 tags:
 - Movie
+- Sci-Fi
 ---
 
 ##电影结局分析 Ending analysis
