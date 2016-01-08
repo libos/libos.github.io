@@ -32,15 +32,25 @@ body {
   line-height: 1;
 }
 ol, ul {
-  list-style: none;
+  list-style: disc;
 }
 blockquote, q {
-  quotes: none;
+  background:#f9f9f9;
+  border-left:10px solid #ccc;
+  margin:1.5em 10px;
+  padding:.5em 10px;
+  quotes:"\201C""\201D""\2018""\2019";
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
+blockquote:before, q:before {
+  color:#ccc;
+  content:open-quote;
+  font-size:4em;
+  line-height:.1em;
+  margin-right:.25em;
+  vertical-align:-.4em;
+}
+blockquote p {
+  display:inline;
 }
 table {
   border-collapse: collapse;
