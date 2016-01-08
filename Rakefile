@@ -87,7 +87,7 @@ task :post do
     post.puts "---"
     post.puts "layout: post"
     post.puts "title: \"#{title.gsub(/-/,' ')}\""
-    post.puts "permalink: #{slug}"
+    # post.puts "permalink: #{slug}"
     post.puts "date: #{date} #{time}"
     post.puts "comments: true"
     post.puts "description: \"#{title}\""
