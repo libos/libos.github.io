@@ -6,8 +6,7 @@
     <div class="post-meta">
       <time>{{ post.date | date: "%b %d, %Y" }}</time>
     </div>
-    {% capture title_size %}{{ post.title | size | modulo:5 }}{% endcapture %}
-    {% assign tidx = title_size + 1 %}
+    {% capture tidx %}{{ post.title | size | modulo:5 | plus:1 }}{% endcapture %}
 	<div class="article-info article-info-post">
 		<div class="article-tag tagcloud">
 		<ul class="article-tag-list">

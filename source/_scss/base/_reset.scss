@@ -178,6 +178,12 @@ table {
 .clearfix {
   clear:both;
 }
+.post-meta:before{
+  color: #999;
+  content: "\f073";
+  font: 17px FontAwesome;
+  margin-right: 10px;
+}
 .post-meta {
   float: right;
   position: relative;
