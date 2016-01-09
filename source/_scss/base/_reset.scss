@@ -134,6 +134,31 @@ table {
 .cloud_tags{
   padding:25px;
 }
+.cloud_tags a{
+   background: #ff945c;
+}
+.cloud_tags a:before{
+  content: " ";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0;
+  left: -18px;
+  border: 9px solid transparent
+}
+.cloud_tags a:after{
+  content: " ";
+  width: 4px;
+  height: 4px;
+  background-color: #fff;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 7px;
+  left: 2px
+}
 .article-tag-list {
     margin: 0px 0px 0px 0px;
 }
