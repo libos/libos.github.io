@@ -14,7 +14,7 @@ layout: default
         <ul class="article-tag-list">
         {% for tag in page.tags %}
           <li class="article-tag-list-item">
-            <a class="color{{tidx}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
+            <a class="color{{tidx}}" href="/tags/{{tag | downcase}}/index.html" style="font-size: 12px;">{{tag}}</a>
           </li>
         {% endfor %}
         </ul>
