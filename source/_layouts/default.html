@@ -13,7 +13,8 @@
 
       {% include github-corner.html %}
 
-      <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+      <script src="{{ "/js/jquery-1.11.3.min.js" | prepend: site.baseurl }}"></script>
+      <script src="{{ "/js/highlight.pack.js" | prepend: site.baseurl }}"></script>
       <script>
       $(document).ready(function() {
         $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {

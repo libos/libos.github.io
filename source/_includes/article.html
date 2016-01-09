@@ -6,13 +6,14 @@
     <div class="post-meta">
       <time>{{ post.date | date: "%b %d, %Y" }}</time>
     </div>
-    {% assign cidx = forloop.index %}
+    {% capture title_size %}{{ post.title | size }}{% endcapture %}
+    {% assign tidx = ( title_size + 1 ) | mod:5 %}
 	<div class="article-info article-info-post">
 		<div class="article-tag tagcloud">
 		<ul class="article-tag-list">
 		{% for tag in post.tags %}
 		  <li class="article-tag-list-item">
-		    <a class="color{{cidx}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
+		    <a class="color{{tidx}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
 		  </li>
 		{% endfor %}
 		</ul>
