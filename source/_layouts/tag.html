@@ -1,0 +1,11 @@
+---
+layout: default
+---
+
+<h1>{{ page.tag }}</h1>
+
+<section class="post-list">
+  {% for post in site.tags[page.tag] %}
+    {% include article.html %}
+  {% endfor %}
+</section>
