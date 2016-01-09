@@ -24,6 +24,7 @@ baseurl: ""
 
 tag_page_layout: tag
 tag_page_dir: tags
+tag_permalink_style: pretty
 
 
 repo: https://github.com/libos/libos.github.io
