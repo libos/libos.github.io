@@ -172,7 +172,8 @@ table {
     float: left;
 }
 .article-tag .article-tag-list {
-    float: left
+    float: left;
+    list-style: none;
 }
 .article-tag:before {
     float: left;

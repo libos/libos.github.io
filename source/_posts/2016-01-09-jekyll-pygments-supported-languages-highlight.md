@@ -14,7 +14,7 @@ tags:
 
 When use pygment in Jekyll,you should use as follow:
 
-{% highlight html%}
+{% highlight nginx %}
 {% raw %}
 {% highlight nginx %}
 http{}
