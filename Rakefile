@@ -5,7 +5,6 @@ require "bundler/setup"
 require "jekyll"
 require 'jekyll/tagging'
 
-
 # Change your GitHub reponame
 GITHUB_REPONAME    = "libos/libos.github.io"
 GITHUB_REPO_BRANCH = "master"
