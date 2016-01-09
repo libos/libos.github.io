@@ -5,7 +5,7 @@ date: 2016-01-09 15:55:02
 comments: true
 description: "Jekyll Pygments supported languages highlight"
 keywords: "jekyll,markdown,pygments,supported,languages,highlight"
-categories:jekyll
+categories: jekyll
 
 tags:
 - jekyll
