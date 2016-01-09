@@ -16,6 +16,7 @@
       <script src="{{ "/js/jquery-1.11.3.min.js" | prepend: site.baseurl }}"></script>
       <script src="{{ "/js/highlight.pack.js" | prepend: site.baseurl }}"></script>
       <script>
+      hljs.initHighlightingOnLoad();
       $(document).ready(function() {
         $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
           $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');

@@ -8,12 +8,14 @@ layout: default
     <header class="post-header">
       <h1 class="post-title">{{ page.title }}</h1>
       <p class="post-meta">{{ page.date | date: "%B %d, %Y &nbsp;&nbsp; %R" }}{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
+      {% capture title_size %}{{ post.title | size | mod:5 }}{% endcapture %}
+      {% assign tidx = title_size + 1 %}
       <div class="article-info article-info-post">
         <div class="article-tag tagcloud">
         <ul class="article-tag-list">
         {% for tag in page.tags %}
           <li class="article-tag-list-item">
-            <a class="color{{forloop.index}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
+            <a class="color{{tidx}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
           </li>
         {% endfor %}
         </ul>
