@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Libo's Blog</title>
+    <meta name="description" content="Libo Blog">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/tags/cpp/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+  </head>
+
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <h1>Tag: Cpp</h1>
+
+<section class="post-list">
+  
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">
+      <a class="post-link" href="/blog/2016/01/09/makefile-example/">Makefile Example</a>
+    </h1>
+    <div class="post-meta">
+      <time>Jan 09, 2016</time>
+    </div>
+    
+	<div class="article-info article-info-post">
+		<div class="article-tag tagcloud">
+		<ul class="article-tag-list">
+		
+		  <li class="article-tag-list-item">
+		    <a class="color2" href="/tags/cpp/" style="font-size: 12px;color:#fff;">Cpp</a>
+		  </li>
+		
+		</ul>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+  </header>
+
+  <p><a href="/blog/2016/01/09/makefile-example/" title="Permalink to: Makefile Example" class="read-more">
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="cp">#编译分为两步 Compile 和 Link</span>
+<span class="cp">#CC是编译器</span>
+<span class="n">CC</span> <span class="o">=</span> <span class="n">gcc</span>
+<span class="cp">#LD 是Link driver</span>
+<span class="n">LD</span> <span class="o">=</span> <span class="n">gcc</span>
+<span class="cp">#CFLAGS是Compile的时候参数。-g是带上debug代码，-Wall是多平台的错误监测，-O1是第一级代码优化，0~4（一般到4，可以更大），越大优化程度越高，有得有失</span>
+<span class="n">CFLAGS</span> <span class="o">=</span> <span class="o">-</span><span class="n">g</span> <span class="o">-</span><span class="n">Wall</span> <span class="o">-</span><span class="n">O1</span>
+<span class="cp">#编译用到的库 参数有-L(后面加库可能在的地方，例如当前目录&quot;-L.&quot;)和-l(后面加库名例如，&quot;-lutil&quot;)</span>
+<span class="n">LDFLAGS</span> <span class="o">=</span> 
+<span class="cp">#必须要写出全部path，如果只写rm，有些用户可能把rm alias到了rm -i，使用全路径防止alias的影响</span>
+<span class="n">RM</span> <span class="o">=</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">rm</span> <span class="o">-</span><span class="n">f</span>
+<span class="cp">#源文件</span>
+<span class="n">SRCS</span> <span class="o">=</span> <span class="p">.</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">watcher</span><span class="p">.</span><span class="n">c</span> <span class="p">.</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">wth_config</span><span class="p">.</span><span class="n">h</span>
+<span class="cp">#两个不同的OBJS</span>
+<span class="n">OBJS</span> <span class="o">=</span> <span class="p">.</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">watcher</span><span class="p">.</span><span class="n">o</span>
+<span class="n">OBJS_TEST</span> <span class="o">=</span> <span class="p">.</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">o</span>
+<span class="cp">#也可以这么写</span>
+<span class="cp"># $(SRCS:.c=.o)</span>
+<span class="cp">#多个目标</span>
+<span class="n">TARGETS</span> <span class="o">=</span> <span class="n">watcher</span> <span class="n">client</span>
+ 
+ 
+<span class="nl">all</span><span class="p">:</span> <span class="err">$</span><span class="p">(</span><span class="n">TARGETS</span><span class="p">)</span>
+<span class="cp">#要分这些，不知道合起来怎么写，欢迎留言</span>
+<span class="nl">watcher</span><span class="p">:</span><span class="err">$</span><span class="p">(</span><span class="n">OBJS</span><span class="p">)</span>
+                <span class="err">$</span><span class="p">(</span><span class="n">LD</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">LDFLAGS</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">OBJS</span><span class="p">)</span> <span class="o">-</span><span class="n">o</span> <span class="n">watcher</span>
+ 
+<span class="nl">client</span><span class="p">:</span><span class="err">$</span><span class="p">(</span><span class="n">OBJS_TEST</span><span class="p">)</span>
+        <span class="err">$</span><span class="p">(</span><span class="n">LD</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">LDFLAGS</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">OBJS_TEST</span><span class="p">)</span> <span class="o">-</span><span class="n">o</span> <span class="n">client</span>
+<span class="cp">#这个可以一个一个的.o逐个写，也可以用通配符</span>
+<span class="cp"># watcher.o: $(SRCS)</span>
+<span class="cp">#                 $(CC) $(CFLAGS) -c $(SRC)</span>
+ 
+<span class="o">%</span><span class="p">.</span><span class="nl">o</span><span class="p">:</span> <span class="o">%</span><span class="p">.</span><span class="n">c</span> <span class="o">%</span><span class="p">.</span><span class="n">h</span>
+ 
+                <span class="err">$</span><span class="p">(</span><span class="n">CC</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">CFLAGS</span><span class="p">)</span> <span class="o">-</span><span class="n">c</span> <span class="err">$</span><span class="o">&lt;</span>
+<span class="cp">#make clean 的时候，删除东东</span>
+<span class="nl">clean</span><span class="p">:</span>
+                <span class="err">$</span><span class="p">(</span><span class="n">RM</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">TARGETS</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">OBJS</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">OBJS_TEST</span><span class="p">)</span></code></pre></div>
+
+</a></p>
+</article>
+  
+</section>
+
+<div class="tagcloud cloud_tags">
+  <a href="/tags/cpp/" class="set-5">Cpp</a> <a href="/tags/movie/" class="set-5">Movie</a> <a href="/tags/sci-fi/" class="set-5">Sci-Fi</a> <a href="/tags/ar/" class="set-5">ar</a> <a href="/tags/games/" class="set-5">games</a> <a href="/tags/unity3d/" class="set-5">unity3d</a> <a href="/tags/welcome/" class="set-5">welcome</a>
+</div>
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      <a href="https://github.com/libos/libos.github.io" target="_blank" class="github-corner"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#337ab7; color:#fff; position: absolute; top: 0; border: 0; right: 0;"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>
