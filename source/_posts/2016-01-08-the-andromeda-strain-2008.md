@@ -20,7 +20,7 @@ tags:
 ostream_iterator<int> tt(std::cout," ");
 for (auto &i : tt)
 {
-	
+		
 }
 ```
 
