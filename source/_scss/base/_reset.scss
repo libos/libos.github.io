@@ -137,6 +137,7 @@ table {
 }
 .cloud_tags a{
    background: #ff945c;
+   font-size:12px;
 }
 .cloud_tags a:before{
   content: " ";
@@ -147,7 +148,6 @@ table {
   left: -18px;
   border: 9px solid transparent;
   border-right-color: #ff945c;
-  font-size:12px;
 }
 .cloud_tags a:after{
   content: " ";
