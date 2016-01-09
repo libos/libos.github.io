@@ -3,6 +3,8 @@ require "rubygems"
 require "tmpdir"
 require "bundler/setup"
 require "jekyll"
+require 'jekyll/tagging'
+
 
 # Change your GitHub reponame
 GITHUB_REPONAME    = "libos/libos.github.io"
@@ -12,7 +14,6 @@ SOURCE = "source/"
 DEST   = "_site"
 CONFIG = {
   'layouts' => File.join(SOURCE, "_layouts"),
-  'plugins' => File.join(SOURCE, "_plugins"),
   'posts' => File.join(SOURCE, "_posts"),
   'post_ext' => "md",
   'categories' => File.join(SOURCE, "categories"),

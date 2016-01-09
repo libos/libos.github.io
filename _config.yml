@@ -22,6 +22,10 @@ url: http://next.sh
 # baseurl: "/end2end"
 baseurl: ""
 
+tag_page_layout: tag
+tag_page_dir: tags
+
+
 repo: https://github.com/libos/libos.github.io
 disqus_shortname: "libos"
 
