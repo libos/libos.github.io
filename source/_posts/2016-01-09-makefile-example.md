@@ -11,6 +11,8 @@ tags:
 - Cpp
 ---
 
+Most simple and explicit example of makefile.
+
 {% highlight cpp %}
 #编译分为两步 Compile 和 Link
 #CC是编译器
