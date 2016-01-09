@@ -9,7 +9,18 @@ layout: default
       <h1 class="post-title">{{ page.title }}</h1>
       <p class="post-meta">{{ page.date | date: "%B %d, %Y &nbsp;&nbsp; %R" }}{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
     </header>
-
+    <div class="article-info article-info-post">
+      <div class="article-tag tagcloud">
+      <ul class="article-tag-list">
+      {% for tag in page.tags %}
+        <li class="article-tag-list-item">
+          <a class="color{{forloop.index}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
+        </li>
+      {% endfor %}
+      </ul>
+      </div>
+      <div class="clearfix"></div>
+    </div>
     <div class="post-content">
       {{ content }}
     </div>

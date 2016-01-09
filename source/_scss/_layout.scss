@@ -9,6 +9,10 @@ body {
   height: 100%;
 }
 
+p {
+  line-height: 1.8em;
+}
+
 body {
   border-top: 5px solid $primary-color;
   background: $base-background-color url("../images/bg-pattern.png");
@@ -239,10 +243,32 @@ body.home {
 
 .post {
   padding: $base-spacing 0;
+  padding-right: 30px;
+  padding-left: 30px;
+  h2 {
+      margin-top: 20px;
+      font-weight: 300;
+      color: #574c4c;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ddd
+  }
+  h3 {
+      margin-top: 10px;
+      font-weight: 300;
+      color: #574c4c;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ddd
+  }
+  h4,h5,h6 {
+      font-weight: 300;
+      color: #574c4c
+  }
 }
 
 .post-header {
   margin-bottom: $base-spacing;
+  border-left: 5px solid;
+  padding: 15px 0 15px 25px;
 }
 
 .post-title {

@@ -93,11 +93,76 @@ code {
 
 pre {
   -webkit-overflow-scrolling: touch;
-  font-family: "Courier New", monospace;
+  font-family: "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace
   font-size: 0.9em;
-  margin: 0;
+  background: #4d4d4d;
+  margin: 0 0;
+  padding: 2px 10px;
+  overflow: auto;
+  color: #4c4c4c;
+  line-height: 22.400000000000002px
 
   code {
     line-height: 1.75em;
   }
+}
+
+
+pre .comment {
+    color: #666
+}
+pre .title {
+    color: #a6e22e
+}
+pre .variable,
+pre .attribute,
+pre .tag,
+pre .regexp,
+pre .ruby .constant,
+pre .xml .tag .title,
+pre .xml .pi,
+pre .xml .doctype,
+pre .html .doctype,
+pre .css .id,
+pre .css .class,
+pre .css .pseudo {
+    color: #f2777a
+}
+pre .number,
+pre .preprocessor,
+pre .built_in,
+pre .literal,
+pre .params,
+pre .constant {
+    color: #66d9ef
+}
+pre .class,
+pre .ruby .class .title,
+pre .css .rules .attribute {
+    color: #e6db74
+}
+pre .string,
+pre .value,
+pre .inheritance,
+pre .header,
+pre .ruby .symbol,
+pre .xml .cdata {
+    color: #e6db74
+}
+pre .css .hexcolor {
+    color: #6cc
+}
+pre .function,
+pre .python .decorator,
+pre .python .title,
+pre .ruby .function .title,
+pre .ruby .title .keyword,
+pre .perl .sub,
+pre .javascript .title,
+pre .coffeescript .title {
+    color: #69c
+}
+pre .keyword,
+pre .javascript .function {
+    color: #f92672
 }
