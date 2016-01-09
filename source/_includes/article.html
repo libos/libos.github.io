@@ -6,6 +6,19 @@
     <div class="post-meta">
       <time>{{ post.date | date: "%b %d, %Y" }}</time>
     </div>
+    {{ assign cidx = forloop.index }}
+	<div class="article-info article-info-post">
+		<div class="article-tag tagcloud">
+		<ul class="article-tag-list">
+		{% for tag in page.tags %}
+		  <li class="article-tag-list-item">
+		    <a class="color{{cidx}}" href="/tags/{{tag}}/" style="font-size: 12px;">{{tag}}</a>
+		  </li>
+		{% endfor %}
+		</ul>
+		</div>
+		<div class="clearfix"></div>
+	</div>
   </header>
 
   <p><a href="{{ post.url | prepend: site.baseurl }}" title="Permalink to: {{ post.title }}" class="read-more">{{ post.excerpt }}</a></p>
