@@ -6,7 +6,7 @@
     <div class="post-meta">
       <time>{{ post.date | date: "%b %d, %Y" }}</time>
     </div>
-    {{ assign cidx = forloop.index }}
+    {% assign cidx = forloop.index %}
 	<div class="article-info article-info-post">
 		<div class="article-tag tagcloud">
 		<ul class="article-tag-list">
