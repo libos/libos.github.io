@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>nginx tcp proxy</title>
+    <meta name="description" content="使用的是这个module，https://github.com/yaoweibin/nginx_tcp_proxy_module.">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/01/09/nginx-proxy/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+  </head>
+
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">nginx tcp proxy</h1>
+      <p class="post-meta">January 09, 2016 &nbsp;&nbsp; 15:48</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/nginx/index.html" style="font-size: 12px;color:#fff;">nginx</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/proxy/index.html" style="font-size: 12px;color:#fff;">proxy</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/network/index.html" style="font-size: 12px;color:#fff;">network</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>使用的是这个module，https://github.com/yaoweibin/nginx_tcp_proxy_module.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>wget <span class="s1">&#39;http://nginx.org/download/nginx-1.2.1.tar.gz&#39;</span>
+<span class="nv">$ </span>tar -xzvf nginx-1.2.1.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>nginx-1.2.1/
+<span class="nv">$ </span>patch -p1 <span class="p">&amp;</span>lt<span class="p">;</span> /path/to/nginx_tcp_proxy_module/tcp.patch
+<span class="nv">$ </span>./configure --add-module<span class="o">=</span>/path/to/nginx_tcp_proxy_module
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make install</code></pre></div>
+
+<p>然后再nginx.conf里面：</p>
+
+<div class="highlight"><pre><code class="language-nginx" data-lang="nginx"><span class="k">http{}</span>
+<span class="s">mail</span><span class="p">{}</span>
+<span class="k">tcp</span> <span class="p">{</span>
+        <span class="kn">upstream</span> <span class="s">tcp_socket</span> <span class="p">{</span>
+              <span class="kn">server</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">8751</span><span class="p">;</span>
+              <span class="kn">check</span> <span class="s">interval=3000</span> <span class="s">rise=2</span> <span class="s">fall=5</span> <span class="s">timeout=1000</span><span class="p">;</span>
+        <span class="p">}</span> 
+        <span class="kn">server</span> <span class="p">{</span>
+              <span class="kn">listen</span> <span class="mi">8750</span><span class="p">;</span>
+              <span class="kn">proxy_pass</span> <span class="s">tcp_socket</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>然后<code>nginx -s reload</code>
+这样就可以了。然后启动本地的某个tcp程序，监听端口8751。用测试程序发起一个8750的连接请求，测试通过。而且不影响http的代理。
+但是这个也有副作用，当服务端关闭连接的时候，客户端不可能立刻发觉连接已经被关闭，需要等到：
+当nginx在执行check规则时认为服务端链接关闭，nginx会关闭与客户端的连接。</p>
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/01/09/nginx-proxy';
+        var disqus_title = 'nginx tcp proxy';
+        var disqus_url = 'http://next.sh/blog/2016/01/09/nginx-proxy';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>
