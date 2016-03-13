@@ -5,6 +5,7 @@
     <description>Libo Blog</description>
     <link>http://next.sh/</link>
     <atom:link href="http://next.sh/feed.xml" rel="self" type="application/rss+xml"/>
+<<<<<<< HEAD
     <pubDate>Sat, 09 Jan 2016 07:45:31 +0000</pubDate>
     <lastBuildDate>Sat, 09 Jan 2016 07:45:31 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
@@ -12,6 +13,1879 @@
       <item>
         <title>Makefile Example</title>
         <description>
+=======
+    <pubDate>Sun, 13 Mar 2016 15:40:10 +0000</pubDate>
+    <lastBuildDate>Sun, 13 Mar 2016 15:40:10 +0000</lastBuildDate>
+    <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>OSX How to Disable System Integrity Protection</title>
+        <description>&lt;p&gt;如果想更新Mac OSX中的Python，那么需要关掉系统级的权限保护，否则会导致无法更新，无法安装新的Python包。即便使用Homebrew也是错误连连。&lt;/p&gt;
+
+&lt;p&gt;因为在OSX中，如果System Integrity Protection是enable的，&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;/System
+/sbin
+/usr &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;除了/usr/local之外&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;是被锁住的。即便在Terminal中使用sudo，也是不能修改其中的数据的。&lt;/p&gt;
+
+&lt;p&gt;如何关掉System Integrity Protection呢？&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;重启，按住Command+R键，指导选择启动项&lt;/li&gt;
+  &lt;li&gt;选择Recovery Mode&lt;/li&gt;
+  &lt;li&gt;Utilities-&amp;gt;Terminal&lt;/li&gt;
+  &lt;li&gt;然后输入&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;csrutil disable&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;重启即可&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果想恢复输入命令，重启，进recovery，然后输入&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;csrutil &lt;span class=&quot;nb&quot;&gt;enable&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;即可&lt;/p&gt;
+
+&lt;p&gt;hope save your day~&lt;/p&gt;
+
+&lt;p&gt;==
+13 March 2016 23:33 Update&lt;/p&gt;
+
+&lt;p&gt;过年回来之后就开始懒了，虽然在学习Deep Learning，不过还得加油~&lt;/p&gt;
+</description>
+        <pubDate>Sun, 13 Mar 2016 23:11:34 +0000</pubDate>
+        <link>http://next.sh/blog/2016/03/13/osx-how-to-disable-system-integrity-protection/</link>
+        <guid isPermaLink="true">http://next.sh/blog/2016/03/13/osx-how-to-disable-system-integrity-protection/</guid>
+        
+        <category>Python</category>
+        
+        <category>OSX</category>
+        
+        
+        <category>python</category>
+        
+      </item>
+    
+      <item>
+        <title>What happened to you,C++</title>
+        <description>&lt;p&gt;C++11很多地方写起来已经和原来的C++完全不一样，看完C++ Primer第五版之后，在这里总结300余条，之后将会更新。&lt;/p&gt;
+
+&lt;p&gt;13 March 2016 (Sunday) Update&lt;/p&gt;
+
+&lt;p&gt;过完年之后果然懒了，之后会更新&lt;/p&gt;
+</description>
+        <pubDate>Wed, 20 Jan 2016 23:16:36 +0000</pubDate>
+        <link>http://next.sh/blog/2016/01/20/what-happened-to-youc/</link>
+        <guid isPermaLink="true">http://next.sh/blog/2016/01/20/what-happened-to-youc/</guid>
+        
+        <category>Cpp</category>
+        
+        
+        <category>cpp</category>
+        
+      </item>
+    
+      <item>
+        <title>Jekyll Pygments supported languages highlight</title>
+        <description>&lt;p&gt;When use pygment in Jekyll,you should use as follow:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-nginx&quot; data-lang=&quot;nginx&quot;&gt;&lt;span class=&quot;k&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;highlight&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;mail{}&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;tcp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kn&quot;&gt;upstream&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tcp_socket&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8751&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;check&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;interval=3000&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rise=2&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fall=5&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timeout=1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+        &lt;span class=&quot;kn&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;listen&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8750&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;proxy_pass&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tcp_socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;{%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;endhighlight&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;List of lexers/highlighters supported by pygments:&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;
+            Format
+        &lt;/th&gt;
+        &lt;th&gt;
+            Short names for highlight tag
+        &lt;/th&gt;
+    &lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Debian Sourcelist&lt;/td&gt;
+    &lt;td&gt;sourceslist, sources.list&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Delphi&lt;/td&gt;
+    &lt;td&gt;delphi, pas, pascal, objectpascal&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Mako&lt;/td&gt;
+    &lt;td&gt;js+mako, javascript+mako&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Elixir iex session&lt;/td&gt;
+    &lt;td&gt;iex&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PostgreSQL console (psql)&lt;/td&gt;
+    &lt;td&gt;psql, postgresql-console, postgres-console&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Brainfuck&lt;/td&gt;
+    &lt;td&gt;brainfuck, bf&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ceylon&lt;/td&gt;
+    &lt;td&gt;ceylon&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Django/Jinja&lt;/td&gt;
+    &lt;td&gt;js+django, javascript+django, js+jinja, javascript+jinja&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Evoque&lt;/td&gt;
+    &lt;td&gt;html+evoque&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;NumPy&lt;/td&gt;
+    &lt;td&gt;numpy&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Modula-2&lt;/td&gt;
+    &lt;td&gt;modula2, m2&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;LiveScript&lt;/td&gt;
+    &lt;td&gt;live-script, livescript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Nimrod&lt;/td&gt;
+    &lt;td&gt;nimrod, nim&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Bash&lt;/td&gt;
+    &lt;td&gt;bash, sh, ksh&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Django/Jinja&lt;/td&gt;
+    &lt;td&gt;html+django, html+jinja&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+PHP&lt;/td&gt;
+    &lt;td&gt;css+php&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Lasso&lt;/td&gt;
+    &lt;td&gt;xml+lasso&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;VimL&lt;/td&gt;
+    &lt;td&gt;vim&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Genshi Text&lt;/td&gt;
+    &lt;td&gt;css+genshitext, css+genshi&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Fancy&lt;/td&gt;
+    &lt;td&gt;fancy, fy&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Coldfusion HTML&lt;/td&gt;
+    &lt;td&gt;cfm&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;cfstatement&lt;/td&gt;
+    &lt;td&gt;cfs&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Scalate Server Page&lt;/td&gt;
+    &lt;td&gt;ssp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Smarty&lt;/td&gt;
+    &lt;td&gt;smarty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Evoque&lt;/td&gt;
+    &lt;td&gt;xml+evoque&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;haXe&lt;/td&gt;
+    &lt;td&gt;hx, haXe&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PowerShell&lt;/td&gt;
+    &lt;td&gt;powershell, posh, ps1&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Tea&lt;/td&gt;
+    &lt;td&gt;tea&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Cheetah&lt;/td&gt;
+    &lt;td&gt;html+cheetah, html+spitfire&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ruby irb session&lt;/td&gt;
+    &lt;td&gt;rbcon, irb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Mason&lt;/td&gt;
+    &lt;td&gt;mason&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Django/Jinja&lt;/td&gt;
+    &lt;td&gt;django, jinja&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JAGS&lt;/td&gt;
+    &lt;td&gt;jags&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ApacheConf&lt;/td&gt;
+    &lt;td&gt;apacheconf, aconf, apache&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;DTD&lt;/td&gt;
+    &lt;td&gt;dtd&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Dylan session&lt;/td&gt;
+    &lt;td&gt;dylan-console, dylan-repl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Lighttpd configuration file&lt;/td&gt;
+    &lt;td&gt;lighty, lighttpd&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Java&lt;/td&gt;
+    &lt;td&gt;java&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Genshi Text&lt;/td&gt;
+    &lt;td&gt;js+genshitext, js+genshi, javascript+genshitext, javascript+genshi&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Scheme&lt;/td&gt;
+    &lt;td&gt;scheme, scm&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Nemerle&lt;/td&gt;
+    &lt;td&gt;nemerle&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;RHTML&lt;/td&gt;
+    &lt;td&gt;rhtml, html+erb, html+ruby&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in Java Host&lt;/td&gt;
+    &lt;td&gt;ragel-java&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Darcs Patch&lt;/td&gt;
+    &lt;td&gt;dpatch&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Puppet&lt;/td&gt;
+    &lt;td&gt;puppet&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Octave&lt;/td&gt;
+    &lt;td&gt;octave&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CoffeeScript&lt;/td&gt;
+    &lt;td&gt;coffee-script, coffeescript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in D Host&lt;/td&gt;
+    &lt;td&gt;ragel-d&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Scilab&lt;/td&gt;
+    &lt;td&gt;scilab&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Monkey&lt;/td&gt;
+    &lt;td&gt;monkey&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Myghty&lt;/td&gt;
+    &lt;td&gt;html+myghty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Erlang erl session&lt;/td&gt;
+    &lt;td&gt;erl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS&lt;/td&gt;
+    &lt;td&gt;css&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Smarty&lt;/td&gt;
+    &lt;td&gt;js+smarty, javascript+smarty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Io&lt;/td&gt;
+    &lt;td&gt;io&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;COBOLFree&lt;/td&gt;
+    &lt;td&gt;cobolfree&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Asymptote&lt;/td&gt;
+    &lt;td&gt;asy, asymptote&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;vhdl&lt;/td&gt;
+    &lt;td&gt;vhdl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Python 3&lt;/td&gt;
+    &lt;td&gt;python3, py3&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Ruby&lt;/td&gt;
+    &lt;td&gt;css+erb, css+ruby&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Fortran&lt;/td&gt;
+    &lt;td&gt;fortran&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;d-objdump&lt;/td&gt;
+    &lt;td&gt;d-objdump&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MySQL&lt;/td&gt;
+    &lt;td&gt;mysql&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;REBOL&lt;/td&gt;
+    &lt;td&gt;rebol&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;C++&lt;/td&gt;
+    &lt;td&gt;cpp, c++&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ERB&lt;/td&gt;
+    &lt;td&gt;erb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CBM BASIC V2&lt;/td&gt;
+    &lt;td&gt;cbmbas&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Befunge&lt;/td&gt;
+    &lt;td&gt;befunge&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Julia&lt;/td&gt;
+    &lt;td&gt;julia, jl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MoonScript&lt;/td&gt;
+    &lt;td&gt;moon, moonscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ruby&lt;/td&gt;
+    &lt;td&gt;rb, ruby, duby&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Smarty&lt;/td&gt;
+    &lt;td&gt;xml+smarty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Dylan&lt;/td&gt;
+    &lt;td&gt;dylan&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Groovy&lt;/td&gt;
+    &lt;td&gt;groovy&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MoinMoin/Trac Wiki markup&lt;/td&gt;
+    &lt;td&gt;trac-wiki, moin&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;autohotkey&lt;/td&gt;
+    &lt;td&gt;ahk&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;C&lt;/td&gt;
+    &lt;td&gt;c&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML&lt;/td&gt;
+    &lt;td&gt;html&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Felix&lt;/td&gt;
+    &lt;td&gt;felix, flx&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CMake&lt;/td&gt;
+    &lt;td&gt;cmake&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;NSIS&lt;/td&gt;
+    &lt;td&gt;nsis, nsi, nsh&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;SourcePawn&lt;/td&gt;
+    &lt;td&gt;sp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Mako&lt;/td&gt;
+    &lt;td&gt;mako&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;VGL&lt;/td&gt;
+    &lt;td&gt;vgl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Velocity&lt;/td&gt;
+    &lt;td&gt;velocity&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Koka&lt;/td&gt;
+    &lt;td&gt;koka&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CUDA&lt;/td&gt;
+    &lt;td&gt;cuda, cu&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Gnuplot&lt;/td&gt;
+    &lt;td&gt;gnuplot&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;IRC logs&lt;/td&gt;
+    &lt;td&gt;irc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Prolog&lt;/td&gt;
+    &lt;td&gt;prolog&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Python&lt;/td&gt;
+    &lt;td&gt;python, py, sage&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Django/Jinja&lt;/td&gt;
+    &lt;td&gt;css+django, css+jinja&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;verilog&lt;/td&gt;
+    &lt;td&gt;verilog, v&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Smalltalk&lt;/td&gt;
+    &lt;td&gt;smalltalk, squeak&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Myghty&lt;/td&gt;
+    &lt;td&gt;js+myghty, javascript+myghty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;YAML&lt;/td&gt;
+    &lt;td&gt;yaml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With ActionScript Target&lt;/td&gt;
+    &lt;td&gt;antlr-as, antlr-actionscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Mako&lt;/td&gt;
+    &lt;td&gt;xml+mako&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XSLT&lt;/td&gt;
+    &lt;td&gt;xslt&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;UrbiScript&lt;/td&gt;
+    &lt;td&gt;urbiscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Scaml&lt;/td&gt;
+    &lt;td&gt;scaml, SCAML&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;S&lt;/td&gt;
+    &lt;td&gt;splus, s, r&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;DylanLID&lt;/td&gt;
+    &lt;td&gt;dylan-lid, lid&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MAQL&lt;/td&gt;
+    &lt;td&gt;maql&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;sqlite3con&lt;/td&gt;
+    &lt;td&gt;sqlite3&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Boo&lt;/td&gt;
+    &lt;td&gt;boo&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;OCaml&lt;/td&gt;
+    &lt;td&gt;ocaml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;eC&lt;/td&gt;
+    &lt;td&gt;ec&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ActionScript&lt;/td&gt;
+    &lt;td&gt;as, actionscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;VB.net&lt;/td&gt;
+    &lt;td&gt;vb.net, vbnet&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;SquidConf&lt;/td&gt;
+    &lt;td&gt;squidconf, squid.conf, squid&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XQuery&lt;/td&gt;
+    &lt;td&gt;xquery, xqy, xq, xql, xqm&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;D&lt;/td&gt;
+    &lt;td&gt;d&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Fantom&lt;/td&gt;
+    &lt;td&gt;fan&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Gettext Catalog&lt;/td&gt;
+    &lt;td&gt;pot, po&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Logos&lt;/td&gt;
+    &lt;td&gt;logos&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Julia console&lt;/td&gt;
+    &lt;td&gt;jlcon&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Lasso&lt;/td&gt;
+    &lt;td&gt;lasso, lassoscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;SCSS&lt;/td&gt;
+    &lt;td&gt;scss&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;BBCode&lt;/td&gt;
+    &lt;td&gt;bbcode&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Haml&lt;/td&gt;
+    &lt;td&gt;haml, HAML&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;FoxPro&lt;/td&gt;
+    &lt;td&gt;Clipper, XBase&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Python 3.0 Traceback&lt;/td&gt;
+    &lt;td&gt;py3tb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MuPAD&lt;/td&gt;
+    &lt;td&gt;mupad&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Ruby&lt;/td&gt;
+    &lt;td&gt;xml+erb, xml+ruby&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Dart&lt;/td&gt;
+    &lt;td&gt;dart&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;IDL&lt;/td&gt;
+    &lt;td&gt;idl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;dg&lt;/td&gt;
+    &lt;td&gt;dg&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Evoque&lt;/td&gt;
+    &lt;td&gt;evoque&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Jade&lt;/td&gt;
+    &lt;td&gt;jade, JADE&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;c-objdump&lt;/td&gt;
+    &lt;td&gt;c-objdump&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Kconfig&lt;/td&gt;
+    &lt;td&gt;kconfig, menuconfig, linux-config, kernel-config&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Java Server Page&lt;/td&gt;
+    &lt;td&gt;jsp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;reg&lt;/td&gt;
+    &lt;td&gt;registry&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ABAP&lt;/td&gt;
+    &lt;td&gt;abap&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Velocity&lt;/td&gt;
+    &lt;td&gt;xml+velocity&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Cheetah&lt;/td&gt;
+    &lt;td&gt;js+cheetah, javascript+cheetah, js+spitfire, javascript+spitfire&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Mako&lt;/td&gt;
+    &lt;td&gt;html+mako&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in Ruby Host&lt;/td&gt;
+    &lt;td&gt;ragel-ruby, ragel-rb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;RobotFramework&lt;/td&gt;
+    &lt;td&gt;RobotFramework, robotframework&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Protocol Buffer&lt;/td&gt;
+    &lt;td&gt;protobuf&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CFEngine3&lt;/td&gt;
+    &lt;td&gt;cfengine3, cf3&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel&lt;/td&gt;
+    &lt;td&gt;ragel&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;GLSL&lt;/td&gt;
+    &lt;td&gt;glsl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;COBOL&lt;/td&gt;
+    &lt;td&gt;cobol&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;TypeScript&lt;/td&gt;
+    &lt;td&gt;ts&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ada&lt;/td&gt;
+    &lt;td&gt;ada, ada95ada2005&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PostgreSQL SQL dialect&lt;/td&gt;
+    &lt;td&gt;postgresql, postgres&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Xtend&lt;/td&gt;
+    &lt;td&gt;xtend&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Logtalk&lt;/td&gt;
+    &lt;td&gt;logtalk&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;objdump&lt;/td&gt;
+    &lt;td&gt;objdump&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Mako&lt;/td&gt;
+    &lt;td&gt;css+mako&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ca65&lt;/td&gt;
+    &lt;td&gt;ca65&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Objective-C++&lt;/td&gt;
+    &lt;td&gt;objective-c++, objectivec++, obj-c++, objc++&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Gherkin&lt;/td&gt;
+    &lt;td&gt;Cucumber, cucumber, Gherkin, gherkin&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+PHP&lt;/td&gt;
+    &lt;td&gt;html+php&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Makefile&lt;/td&gt;
+    &lt;td&gt;make, makefile, mf, bsdmake&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PostScript&lt;/td&gt;
+    &lt;td&gt;postscript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Hxml&lt;/td&gt;
+    &lt;td&gt;haxeml, hxml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Kotlin&lt;/td&gt;
+    &lt;td&gt;kotlin&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PL/pgSQL&lt;/td&gt;
+    &lt;td&gt;plpgsql&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Vala&lt;/td&gt;
+    &lt;td&gt;vala, vapi&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Haskell&lt;/td&gt;
+    &lt;td&gt;haskell, hs&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Bro&lt;/td&gt;
+    &lt;td&gt;bro&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Lua&lt;/td&gt;
+    &lt;td&gt;lua&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;POVRay&lt;/td&gt;
+    &lt;td&gt;pov&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Sass&lt;/td&gt;
+    &lt;td&gt;sass, SASS&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With Java Target&lt;/td&gt;
+    &lt;td&gt;antlr-java&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Tcl&lt;/td&gt;
+    &lt;td&gt;tcl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With ObjectiveC Target&lt;/td&gt;
+    &lt;td&gt;antlr-objc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Ruby&lt;/td&gt;
+    &lt;td&gt;js+erb, javascript+erb, js+ruby, javascript+ruby&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Racket&lt;/td&gt;
+    &lt;td&gt;racket, rkt&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;AspectJ&lt;/td&gt;
+    &lt;td&gt;aspectj&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Base Makefile&lt;/td&gt;
+    &lt;td&gt;basemake&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With Python Target&lt;/td&gt;
+    &lt;td&gt;antlr-python&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;cpp-objdump&lt;/td&gt;
+    &lt;td&gt;cpp-objdump, c++-objdumb, cxx-objdump&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Genshi Text&lt;/td&gt;
+    &lt;td&gt;genshitext&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ioke&lt;/td&gt;
+    &lt;td&gt;ioke, ik&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PyPy Log&lt;/td&gt;
+    &lt;td&gt;pypylog, pypy&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Croc&lt;/td&gt;
+    &lt;td&gt;croc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Objective-J&lt;/td&gt;
+    &lt;td&gt;objective-j, objectivej, obj-j, objj&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;GAS&lt;/td&gt;
+    &lt;td&gt;gas&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Batchfile&lt;/td&gt;
+    &lt;td&gt;bat&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Snobol&lt;/td&gt;
+    &lt;td&gt;snobol&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Python console session&lt;/td&gt;
+    &lt;td&gt;pycon&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML&lt;/td&gt;
+    &lt;td&gt;xml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR&lt;/td&gt;
+    &lt;td&gt;antlr&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Opa&lt;/td&gt;
+    &lt;td&gt;opa&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Cheetah&lt;/td&gt;
+    &lt;td&gt;xml+cheetah, xml+spitfire&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Go&lt;/td&gt;
+    &lt;td&gt;go&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Diff&lt;/td&gt;
+    &lt;td&gt;diff, udiff&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MiniD&lt;/td&gt;
+    &lt;td&gt;minid&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Cython&lt;/td&gt;
+    &lt;td&gt;cython, pyx&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in C Host&lt;/td&gt;
+    &lt;td&gt;ragel-c&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Erlang&lt;/td&gt;
+    &lt;td&gt;erlang&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Debian Control file&lt;/td&gt;
+    &lt;td&gt;control&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;aspx-vb&lt;/td&gt;
+    &lt;td&gt;aspx-vb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;BUGS&lt;/td&gt;
+    &lt;td&gt;bugs, winbugs, openbugs&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in CPP Host&lt;/td&gt;
+    &lt;td&gt;ragel-cpp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;aspx-cs&lt;/td&gt;
+    &lt;td&gt;aspx-cs&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Matlab session&lt;/td&gt;
+    &lt;td&gt;matlabsession&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Properties&lt;/td&gt;
+    &lt;td&gt;properties&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Groff&lt;/td&gt;
+    &lt;td&gt;groff, nroff, man&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Clojure&lt;/td&gt;
+    &lt;td&gt;clojure, clj&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Modelica&lt;/td&gt;
+    &lt;td&gt;modelica&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;QML&lt;/td&gt;
+    &lt;td&gt;qml, Qt Meta Language, Qt modeling Language&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+Lasso&lt;/td&gt;
+    &lt;td&gt;js+lasso, javascript+lasso&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With Perl Target&lt;/td&gt;
+    &lt;td&gt;antlr-perl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Genshi&lt;/td&gt;
+    &lt;td&gt;genshi, kid, xml+genshi, xml+kid&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;BlitzMax&lt;/td&gt;
+    &lt;td&gt;blitzmax, bmax&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Treetop&lt;/td&gt;
+    &lt;td&gt;treetop&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Matlab&lt;/td&gt;
+    &lt;td&gt;matlab&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Myghty&lt;/td&gt;
+    &lt;td&gt;myghty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Genshi&lt;/td&gt;
+    &lt;td&gt;html+genshi, html+kid&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Duel&lt;/td&gt;
+    &lt;td&gt;duel, Duel Engine, Duel View, JBST, jbst, JsonML+BST&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Perl&lt;/td&gt;
+    &lt;td&gt;perl, pl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;FSharp&lt;/td&gt;
+    &lt;td&gt;fsharp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;reStructuredText&lt;/td&gt;
+    &lt;td&gt;rst, rest, restructuredtext&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;NewLisp&lt;/td&gt;
+    &lt;td&gt;newlisp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Scala&lt;/td&gt;
+    &lt;td&gt;scala&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Lasso&lt;/td&gt;
+    &lt;td&gt;css+lasso&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+PHP&lt;/td&gt;
+    &lt;td&gt;xml+php&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Stan&lt;/td&gt;
+    &lt;td&gt;stan&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;INI&lt;/td&gt;
+    &lt;td&gt;ini, cfg&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MOOCode&lt;/td&gt;
+    &lt;td&gt;moocode&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Shell Session&lt;/td&gt;
+    &lt;td&gt;shell-session&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;RPMSpec&lt;/td&gt;
+    &lt;td&gt;spec&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Newspeak&lt;/td&gt;
+    &lt;td&gt;newspeak&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Bash Session&lt;/td&gt;
+    &lt;td&gt;console&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Coq&lt;/td&gt;
+    &lt;td&gt;coq&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Raw token data&lt;/td&gt;
+    &lt;td&gt;raw&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Tcsh&lt;/td&gt;
+    &lt;td&gt;tcsh, csh&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Lasso&lt;/td&gt;
+    &lt;td&gt;html+lasso&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;C#&lt;/td&gt;
+    &lt;td&gt;csharp, c#&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Gosu Template&lt;/td&gt;
+    &lt;td&gt;gst&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;RConsole&lt;/td&gt;
+    &lt;td&gt;rconsole, rout&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;MXML&lt;/td&gt;
+    &lt;td&gt;mxml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;TeX&lt;/td&gt;
+    &lt;td&gt;tex, latex&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Smarty&lt;/td&gt;
+    &lt;td&gt;css+smarty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Text only&lt;/td&gt;
+    &lt;td&gt;text&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With C# Target&lt;/td&gt;
+    &lt;td&gt;antlr-csharp, antlr-c#&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;OpenEdge ABL&lt;/td&gt;
+    &lt;td&gt;openedge, abl, progress&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Cheetah&lt;/td&gt;
+    &lt;td&gt;cheetah, spitfire&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Smali&lt;/td&gt;
+    &lt;td&gt;smali&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;CSS+Myghty&lt;/td&gt;
+    &lt;td&gt;css+myghty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Rd&lt;/td&gt;
+    &lt;td&gt;rd&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;LLVM&lt;/td&gt;
+    &lt;td&gt;llvm&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Standard ML&lt;/td&gt;
+    &lt;td&gt;sml&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Elixir&lt;/td&gt;
+    &lt;td&gt;elixir, ex, exs&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Nginx configuration file&lt;/td&gt;
+    &lt;td&gt;nginx&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;GoodData-CL&lt;/td&gt;
+    &lt;td&gt;gooddata-cl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;AppleScript&lt;/td&gt;
+    &lt;td&gt;applescript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Smarty&lt;/td&gt;
+    &lt;td&gt;html+smarty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Objective-C&lt;/td&gt;
+    &lt;td&gt;objective-c, objectivec, obj-c, objc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript&lt;/td&gt;
+    &lt;td&gt;js, javascript&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Rust&lt;/td&gt;
+    &lt;td&gt;rust&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Common Lisp&lt;/td&gt;
+    &lt;td&gt;common-lisp, cl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Embedded Ragel&lt;/td&gt;
+    &lt;td&gt;ragel-em&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ActionScript 3&lt;/td&gt;
+    &lt;td&gt;as3, actionscript3&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;systemverilog&lt;/td&gt;
+    &lt;td&gt;systemverilog, sv&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Literate Haskell&lt;/td&gt;
+    &lt;td&gt;lhs, literate-haskell&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Python Traceback&lt;/td&gt;
+    &lt;td&gt;pytb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;PHP&lt;/td&gt;
+    &lt;td&gt;php, php3, php4, php5&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With CPP Target&lt;/td&gt;
+    &lt;td&gt;antlr-cpp&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Gosu&lt;/td&gt;
+    &lt;td&gt;gosu&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Hybris&lt;/td&gt;
+    &lt;td&gt;hybris, hy&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JavaScript+PHP&lt;/td&gt;
+    &lt;td&gt;js+php, javascript+php&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Factor&lt;/td&gt;
+    &lt;td&gt;factor&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTML+Velocity&lt;/td&gt;
+    &lt;td&gt;html+velocity&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Mscgen&lt;/td&gt;
+    &lt;td&gt;mscgen, msc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ooc&lt;/td&gt;
+    &lt;td&gt;ooc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;SQL&lt;/td&gt;
+    &lt;td&gt;sql&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;HTTP&lt;/td&gt;
+    &lt;td&gt;http&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ECL&lt;/td&gt;
+    &lt;td&gt;ecl&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Redcode&lt;/td&gt;
+    &lt;td&gt;redcode&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Ragel in Objective C Host&lt;/td&gt;
+    &lt;td&gt;ragel-objc&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Django/Jinja&lt;/td&gt;
+    &lt;td&gt;xml+django, xml+jinja&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;Awk&lt;/td&gt;
+    &lt;td&gt;awk, gawk, mawk, nawk&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;JSON&lt;/td&gt;
+    &lt;td&gt;json&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;NASM&lt;/td&gt;
+    &lt;td&gt;nasm&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;ANTLR With Ruby Target&lt;/td&gt;
+    &lt;td&gt;antlr-ruby, antlr-rb&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;XML+Myghty&lt;/td&gt;
+    &lt;td&gt;xml+myghty&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+
+    &lt;td&gt;AutoIt&lt;/td&gt;
+    &lt;td&gt;autoit, Autoit&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;/table&gt;
+</description>
+        <pubDate>Sat, 09 Jan 2016 15:55:02 +0000</pubDate>
+        <link>http://next.sh/blog/2016/01/09/jekyll-pygments-supported-languages-highlight/</link>
+        <guid isPermaLink="true">http://next.sh/blog/2016/01/09/jekyll-pygments-supported-languages-highlight/</guid>
+        
+        <category>jekyll</category>
+        
+        <category>liquid</category>
+        
+        
+        <category>jekyll</category>
+        
+      </item>
+    
+      <item>
+        <title>nginx tcp proxy</title>
+        <description>&lt;p&gt;使用的是这个module，https://github.com/yaoweibin/nginx_tcp_proxy_module.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wget &lt;span class=&quot;s1&quot;&gt;&amp;#39;http://nginx.org/download/nginx-1.2.1.tar.gz&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tar -xzvf nginx-1.2.1.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;nginx-1.2.1/
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;patch -p1 &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;lt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; /path/to/nginx_tcp_proxy_module/tcp.patch
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./configure --add-module&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/path/to/nginx_tcp_proxy_module
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;然后再nginx.conf里面：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-nginx&quot; data-lang=&quot;nginx&quot;&gt;&lt;span class=&quot;k&quot;&gt;http{}&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;mail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;tcp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kn&quot;&gt;upstream&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tcp_socket&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8751&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;check&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;interval=3000&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rise=2&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;fall=5&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timeout=1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+        &lt;span class=&quot;kn&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;listen&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8750&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+              &lt;span class=&quot;kn&quot;&gt;proxy_pass&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tcp_socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;然后&lt;code&gt;nginx -s reload&lt;/code&gt;
+这样就可以了。然后启动本地的某个tcp程序，监听端口8751。用测试程序发起一个8750的连接请求，测试通过。而且不影响http的代理。
+但是这个也有副作用，当服务端关闭连接的时候，客户端不可能立刻发觉连接已经被关闭，需要等到：
+当nginx在执行check规则时认为服务端链接关闭，nginx会关闭与客户端的连接。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 09 Jan 2016 15:48:43 +0000</pubDate>
+        <link>http://next.sh/blog/2016/01/09/nginx-proxy/</link>
+        <guid isPermaLink="true">http://next.sh/blog/2016/01/09/nginx-proxy/</guid>
+        
+        <category>nginx</category>
+        
+        <category>proxy</category>
+        
+        <category>network</category>
+        
+        
+        <category>tech</category>
+        
+      </item>
+    
+      <item>
+        <title>Makefile Example</title>
+        <description>&lt;p&gt;Most simple and explicit example of makefile.&lt;/p&gt;
+
+>>>>>>> 2cd7f2b2ad54319742007af65c038907d53e4007
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#编译分为两步 Compile 和 Link&lt;/span&gt;
 &lt;span class=&quot;cp&quot;&gt;#CC是编译器&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;CC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gcc&lt;/span&gt;
