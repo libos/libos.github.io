@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>分割、Attention Model与空间变化 笔记</title>
+    <meta name="description" content="Szegedy et al, Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning, arXiv 2016">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/26/lecture-13-segmentation-and-attention-stanford-cs231n/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">分割、Attention Model与空间变化 笔记</h1>
+      <p class="post-meta">March 26, 2016 &nbsp;&nbsp; 16:09</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>Szegedy et al, Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning, arXiv 2016</p>
+
+<p>GoogLeNet-v4</p>
+
+<p>Top 5，error 3.08%</p>
+
+<hr />
+
+<h1 id="segmentation">Segmentation</h1>
+
+<ul>
+  <li>
+    <p>Semantic Segmentation（不知道有几个，只是对每个像素label了）</p>
+  </li>
+  <li>
+    <p>Instance Segmentation（SDS，对每个个体都要区分，不同的人也要分）</p>
+  </li>
+</ul>
+
+<h2 id="semantic-segmentation">Semantic Segmentation</h2>
+
+<p>Figure credit: Shotton et al, “TextonBoost for Image Understanding: Multi-Class Object Recognition and Segmentation by Jointly Modeling Texture, Layout, and Context”, IJCV 2007</p>
+
+<h2 id="instance-segmentation">Instance Segmentation</h2>
+
+<p>Figure credit: Dai et al, “Instance-aware Semantic Segmentation via Multi-task Network Cascades”, arXiv 2015</p>
+
+<h1 id="semantic-segmentation-1">Semantic Segmentation</h1>
+
+<p>输出图像因为Pooling，会比之前的小</p>
+
+<h3 id="image-pyramid">image pyramid</h3>
+
+<p>Resize to multiple different sizes</p>
+
+<p>each scales -&gt; run one cnn per scale -&gt; up scale ouputs and concatenate</p>
+
+<p>法2</p>
+
+<p>RGB三个通道</p>
+
+<p>Apply CNN once</p>
+
+<p>More iterations improve results</p>
+
+<p>Pinheiro and Collobert, “Recurrent Convolutional Neural Networks for Scene Labeling”, ICML 2014</p>
+
+<hr />
+
+<p>Long, Shelhamer, and Darrell, “Fully Convolutional Networks for Semantic Segmentation”, CVPR 2015</p>
+
+<p><strong>Learnable upsampling!</strong></p>
+
+<h4 id="skip-connections">skip connections</h4>
+
+<p>Better results</p>
+
+<p>从pool3或者pool4跳到最后</p>
+
+<p><img src="/images/2016-03-27-sematic-upsampling-deconvolution.png" alt="upsampling" /></p>
+
+<h3 id="deconvolution">Deconvolution</h3>
+
+<p>!!!Input gives weight for filter</p>
+
+<p>convolution的时候，stride1，deconvolution的时候stride2</p>
+
+<p>重叠的地方，相加</p>
+
+<p>Same as backward pass for normal convolution!</p>
+
+<p>“inverse of convolution”</p>
+
+<p>名字：</p>
+
+<p>convolution transpose,backward strided convolution,1/2 strided convolution,upconvolution</p>
+
+<p>名字的争论的论文。。。。</p>
+
+<ul>
+  <li>Im et al, “Generating images with recurrent adversarial networks”, arXiv 2016</li>
+  <li>Radford et al, “Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks”, ICLR 2016</li>
+</ul>
+
+<h2 id="instance-segmentation-1">Instance Segmentation</h2>
+
+<p>Input-&gt;Region Proposal (Segment Proposal) -&gt; External Segment proposal</p>
+
+<p>然后两条路，一条Feature Extraction另一条 R-CNN</p>
+
+<p>-&gt;Region CLassification</p>
+
+<p>-&gt;Refinement</p>
+
+<hr />
+
+<p>判断foreground还是background</p>
+
+<p>Hariharan et al, “Hypercolumns for Object Segmentation and Fine-grained Localization”, CVPR 2015</p>
+
+<hr />
+
+<p>Google Instance Segmentation COCO2015获胜</p>
+
+<p>Dai et al, “Instance-aware Semantic Segmentation via Multi-task Network Cascades”, arXiv 2015</p>
+
+<p>Region proposal network (RPN)</p>
+
+<p>然后使用Rol warping pooling</p>
+
+<p><img src="/images/2016-03-27-r-cnn-instance-seg-coco2015.png" alt="faster R-CNN &amp;&amp; other to captioning" /></p>
+
+<p><img src="/images/2016-03-27-coco-2015-performance.png" alt="COCO 2015 performance" /></p>
+
+<h1 id="attention-models">Attention Models</h1>
+
+<p>Attention Models</p>
+
+<p>每次处理并不是全部处理所有的Input，每次处理只处理最Attention的那部分</p>
+
+<p>最近很火</p>
+
+<p><strong>Xu et al, “Show, Attend and Tell: Neural Image Caption Generation with Visual Attention”, ICML 2015</strong></p>
+
+<p>R-CNN</p>
+
+<p><img src="/images/2016-03-27-rcnn-captioning.png" alt="R-CNN" /></p>
+
+<p>Soft Attention</p>
+
+<p><img src="/images/2016-03-27-soft-attention-for-captioning.png" alt="Soft Attention" /></p>
+
+<p><strong>reinforcement learning</strong></p>
+
+<p>但是不知道在自由图片上的效果</p>
+
+<h2 id="soft-attention-for-translation">Soft Attention for Translation</h2>
+
+<p>Sequence -&gt; Sequence</p>
+
+<p>Video captioning,attention over input frames:</p>
+
+<ul>
+  <li>Yao et al, “Describing Videos by Exploiting Temporal Structure”, ICCV 2015</li>
+</ul>
+
+<p>Image, question to answer,attention over image:</p>
+
+<ul>
+  <li>
+    <p>Xu and Saenko, “Ask, Attend and Answer: Exploring Question-Guided Spatial Attention for Visual Question Answering”, arXiv 2015</p>
+  </li>
+  <li>
+    <p>Zhu et al, “Visual7W: Grounded Question Answering in Images”, arXiv 2015</p>
+  </li>
+</ul>
+
+<h3 id="rnn-handwriting">RNN handwriting</h3>
+
+<p>Graves, “Generating Sequences with Recurrent Neural Networks”, arXiv 2013</p>
+
+<p>Demo <a href="http://www.cs.toronto.edu/~graves/handwriting.html">http://www.cs.toronto.edu/~graves/handwriting.html</a></p>
+
+<h2 id="spatial-transformer-networks">Spatial Transformer Networks</h2>
+
+<p>Jaderberg et al, “Spatial Transformer Networks”, NIPS 2015</p>
+
+<p>Soft attention:</p>
+
+<ul>
+  <li>Easy to implement: produce distribution over input locations, reweight features and feed as input</li>
+  <li>Attend to arbitrary input locations using spatial transformer networks</li>
+</ul>
+
+<p>Hard attention:</p>
+
+<ul>
+  <li>Attend to a single input location</li>
+  <li>Can’t use gradient descent!</li>
+  <li>Need reinforcement learning</li>
+</ul>
+
+<p><strong>Selectively paying attention to different parts of the image</strong></p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/26/lecture-13-segmentation-and-attention-stanford-cs231n';
+        var disqus_title = '分割、Attention Model与空间变化 笔记';
+        var disqus_url = 'http://next.sh/blog/2016/03/26/lecture-13-segmentation-and-attention-stanford-cs231n';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

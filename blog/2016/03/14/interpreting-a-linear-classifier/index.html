@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Interpreting a Linear Classifier</title>
+    <meta name="description" content="这是见过的最有意思的一个分类器的解释。">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/14/interpreting-a-linear-classifier/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">Interpreting a Linear Classifier</h1>
+      <p class="post-meta">March 14, 2016 &nbsp;&nbsp; 00:29</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color3" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>这是见过的最有意思的一个分类器的解释。</p>
+
+<p>在线性分类器的Weights权重（参数 Parameters）到底是什么，怎么去理解？平时我们常见的就是说一条直线，将某一类和其他类别分开了，就和一次函数一样，如下图。</p>
+
+<p><img src="/images/20160314-line-classifier-interpret.png" alt="Line separate interpreting" /></p>
+
+<p>对于f(x,W) = Wx + b，W是什么？</p>
+
+<ul>
+  <li>可以是一个从图像空间到label空间的变换</li>
+  <li>可以一个template，f(x,W)是一个模板对应(Template matching)的过程</li>
+</ul>
+
+<p>所以，如果我们使用<a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a>训练的时候，把W绘制出来会是什么样子的呢？其实是模板的样子，如下图的第二张Presentation。</p>
+
+<p><img src="/images/20160314-interpret-linear-classifier.png" alt="Template matching" /></p>
+
+<p>其中非常有意思的（因为10个classes中最明显），Horse class的W画出来的是有两只马头的。这是结合所有的训练集的🐴得出来的，所以，两只马头意思是，有朝向左的，有朝向右的马，最后得到的W权值，其实就是一个通用性模板，看上去就和两只马头一样。</p>
+
+<p>14 March 2016 00:45 Update</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/14/interpreting-a-linear-classifier';
+        var disqus_title = 'Interpreting a Linear Classifier';
+        var disqus_url = 'http://next.sh/blog/2016/03/14/interpreting-a-linear-classifier';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

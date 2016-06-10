@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>视频处理笔记</title>
+    <meta name="description" content="Feature-based approaches to Activity Recognition">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/27/lecture-14-video-and-unsupervised-learning-stanford-cs231n/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">视频处理笔记</h1>
+      <p class="post-meta">March 27, 2016 &nbsp;&nbsp; 11:01</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>Feature-based approaches to Activity Recognition</p>
+
+<p><strong>Dense trajectories and motion boundary descriptors for action recognition</strong></p>
+
+<p>Wang et al., 2013</p>
+
+<p>Action Recognition with Improved Trajectories</p>
+
+<p>Wang and Schmid, 2013</p>
+
+<p>用来track视频中什么有变化</p>
+
+<p>[T. Brox and J. Malik, “Large displacement optical flow: Descriptor matching in variational motion estimation,” 2011]</p>
+
+<p><img src="/images/2016-03-27-one-idea-of-convnet.png" alt="flow" /></p>
+
+<p>Q: What if the input is now a small chunk of video? E.g. [227x227x3x15] ?</p>
+
+<p>A: Extend the convolutional filters in time, perform spatio-temporal convolutions!E.g. can have 11x11xT filters, where T = 2..15.</p>
+
+<p>filter不仅在空间上移动，还在时间上移动</p>
+
+<h2 id="spatio-temporal-convnets">Spatio-Temporal ConvNets</h2>
+
+<p>Before AlexNets
+[3D Convolutional Neural Networks for Human Action Recognition, Ji et al., 2010]</p>
+
+<p>[Sequential Deep Learning for Human Action Recognition, Baccouche et al., 2011]</p>
+
+<p>After</p>
+
+<p>[Large-scale Video Classification with Convolutional Neural Networks, Karpathy et al., 2014]</p>
+
+<p><img src="/images/2016-03-27-spatio-temporal-video.png" alt="spatio-temporal convolutions" /></p>
+
+<p>Single Frame -&gt;非常好的一种，比较推荐先尝试这个</p>
+
+<p><img src="/images/2016-03-27-frame-diff-performance.png" alt="Model &amp;&amp; Gain" /></p>
+
+<hr />
+
+<p>C3D architechure</p>
+
+<p>in time &amp; VGG &amp; work well</p>
+
+<p>[Learning Spatiotemporal Features with 3D Convolutional Networks, Tran et al. 2015]</p>
+
+<hr />
+
+<p>2D convolution</p>
+
+<p>Simonyan 是VGG的提出人</p>
+
+<p>[Two-Stream Convolutional Networks for Action Recognition in Videos, Simonyan and Zisserman 2014]</p>
+
+<p>Two-stream version works much better than either alone.</p>
+
+<h3 id="longer-term-events">Longer Term Events</h3>
+
+<p>使用LSTM</p>
+
+<p>[Long-term Recurrent Convolutional Networks for Visual Recognition and Description, Donahue et al., 2015]</p>
+
+<p>[Beyond Short Snippets: Deep Networks for Video Classification, Ng et al., 2015]</p>
+
+<h4 id="section">奇葩！！！</h4>
+
+<p>(This paper was way ahead of its time. Cited 65 times.)</p>
+
+<p>Sequential Deep Learning for Human Action Recognition, Baccouche et al., 2011</p>
+
+<h2 id="section-1">三种构架</h2>
+
+<ul>
+  <li>Model temporal motion locally (3D CONV)</li>
+  <li>Model temporal motion globally (LSTM / RNN)</li>
+  <li>Fusions of both approaches at the same</li>
+</ul>
+
+<p>idea:快进快退</p>
+
+<h2 id="long-time-spatio-temporal-convnets">Long-time Spatio-Temporal ConvNets</h2>
+
+<p>[Delving Deeper into Convolutional Networks for Learning Video Representations, Ballas et al., 2016]</p>
+
+<p>！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+很重要，这个应该能用</p>
+
+<p>GRU是一个LSTM的简化算法</p>
+
+<p><img src="/images/2016-03-27-long-time-spatio-temporal.png" alt="long time spatio temporal convnets" /></p>
+
+<p>Infinite (in theory) temporal extent</p>
+
+<p>(neurons that are function of all video frames in the past)</p>
+
+<h3 id="section-2">注意</h3>
+
+<p>在做视频的时候，事先考虑Spatial Temporal Video ConvNet</p>
+
+<p>确定需要local motion（3D Conv）还是global motion（LSTM）</p>
+
+<p>Try out using Optical Flow in a second stream</p>
+
+<p>Try out GRU-RCN! (imo best model)</p>
+
+<h1 id="unsupervised">Unsupervised</h1>
+
+<p>Clustering, dimensionality reduction, feature learning, generative models, etc</p>
+
+<p>Autoencoders</p>
+
+<ul>
+  <li>Vanilla		Traditional: feature learning</li>
+  <li>Variational: generate samples</li>
+</ul>
+
+<p>● Generative Adversarial Networks: Generate samples</p>
+
+<h2 id="encoder">Encoder</h2>
+
+<p>输入Data，经过Encoder，然后去找Features</p>
+
+<p>Feature一般比Data小，所以可以用于降维</p>
+
+<p>然后通过Decoder，然后通过Features重建Input Data</p>
+
+<p>Decoder和Encoder 的Weight是共享的</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p>After training, throw away decoder!</p>
+  </li>
+  <li>
+    <p>Use encoder to initialize a supervised model</p>
+  </li>
+</ul>
+
+<hr />
+
+<p>三层NN，不过输入输出一样，因为需要中间的Features，要用到其他地方</p>
+
+<p>PCA可以解决一部分，更多是Reconstruction</p>
+
+<h2 id="variational-autoencoder-encoder">Variational Autoencoder: Encoder</h2>
+
+<p>Kingma and Welling, “Auto-Encoding Variational Bayes”, ICLR 2014</p>
+
+<p><img src="/images/2016-03-27-var-encoder.png" alt="Encoder" /></p>
+
+<p><img src="/images/2016-03-27-var-autoencoder.png" alt="Variational Autoencoder" /></p>
+
+<p>完全没听懂==</p>
+
+<p><img src="/images/2016-03-27-math.png" alt="no idea" /></p>
+
+<p>Goodfellow et al, “Generative Adversarial Nets”, NIPS 2014</p>
+
+<h3 id="generative-adversarial-nets-multiscale">Generative Adversarial Nets: Multiscale</h3>
+
+<p>Generator is an upsampling network with fractionally-strided convolutions</p>
+
+<p>Discriminator is a convolutional network</p>
+
+<p>Radford et al, “Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks”, ICLR 2016</p>
+
+<p>！！！！！！！！！！！！
+超牛逼</p>
+
+<p>Radford et al,ICLR 2016</p>
+
+<h3 id="generative-adversarial-nets-vector-math">Generative Adversarial Nets: Vector Math</h3>
+
+<p><img src="/images/2016-03-27-generate-smile.png" alt="smile" /></p>
+
+<p><img src="/images/2016-03-27-generate-glass.png" alt="glass" /></p>
+
+<h2 id="put-everything-together">Put everything together</h2>
+
+<p>Dosovitskiy and Brox, “Generating Images with Perceptual Similarity Metrics based on Deep Networks”,arXiv 2016</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/27/lecture-14-video-and-unsupervised-learning-stanford-cs231n';
+        var disqus_title = '视频处理笔记';
+        var disqus_url = 'http://next.sh/blog/2016/03/27/lecture-14-video-and-unsupervised-learning-stanford-cs231n';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CNN使用的一些细节</title>
+    <meta name="description" content="Data augmentation: artificially expand your data">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/26/lecture-11-convnets-in-practice-stanford-cs231n/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">CNN使用的一些细节</h1>
+      <p class="post-meta">March 26, 2016 &nbsp;&nbsp; 10:37</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>Data augmentation: artificially expand your data</p>
+
+<p>Transfer learning: CNNs without huge data</p>
+
+<h2 id="cnncaffe">CNN实战和Caffe</h2>
+
+<h3 id="data-augmentation">Data Augmentation</h3>
+
+<p>如何Transform Image</p>
+
+<ul>
+  <li>改变像素不改变Label</li>
+  <li>Train on transformed data</li>
+  <li>VERY widely used</li>
+</ul>
+
+<p>常见：</p>
+
+<ol>
+  <li>Horizontal flips</li>
+  <li>Random crops/scales</li>
+  <li>Color jitter（eg:Randomly jitter contrast）</li>
+</ol>
+
+<ul>
+  <li>translation</li>
+  <li>rotation</li>
+  <li>stretching</li>
+  <li>shearing,</li>
+  <li>lens distortions</li>
+  <li>其他go crazy</li>
+</ul>
+
+<h4 id="random-crops">Random crops</h4>
+
+<p>Training: sample random crops / scales</p>
+
+<p>ResNet
+1. Pick random L in range [256, 480]
+2. Resize training image, short side = L
+3. Sample random 224 x 224 patch</p>
+
+<p>Testing: average a fixed set of crops</p>
+
+<ol>
+  <li>Resize image at 5 scales: {224, 256, 384, 480, 640}</li>
+  <li>For each size, use 10 224 x 224 crops: 4 corners + center, + flips</li>
+</ol>
+
+<h4 id="color-jitter">Color jitter</h4>
+
+<p>(As seen in [Krizhevsky et al. 2012], ResNet, etc)</p>
+
+<ol>
+  <li>Apply PCA to all [R, G, B] pixels in training set</li>
+  <li>Sample a “color offset” along principal component directions</li>
+  <li>Add offset to all pixels of a training image</li>
+</ol>
+
+<h2 id="section">常用</h2>
+
+<ol>
+  <li>Training: Add random noise</li>
+  <li>Testing: Marginalize over the noise</li>
+</ol>
+
+<h2 id="you-need-a-lot-of-a-data-if-you-want-to-trainuse-cnns">“You need a lot of a data if you want to train/use CNNs”</h2>
+
+<p>并不是==，<strong>Transfer Learning</strong></p>
+
+<p><strong>下载已经训练好的，然后从后面开始替换，重新训练</strong></p>
+
+<p><strong>因为前面的ConvNet，更倾向于一些底层特征</strong></p>
+
+<ul>
+  <li>Train on Imagenet</li>
+  <li>small dataset feature extractor（去掉FC+softmax，只训练这两层）</li>
+  <li>Medium dataset: Fineturning（从后面再去掉几层ConvNet）</li>
+</ul>
+
+<p>Tip: use only ~1/10th of the original learning rate in finetuning top layer, and ~1/100th on intermediate layers</p>
+
+<h4 id="thesis">Thesis</h4>
+
+<p>CNN Features off-the-shelf: an Astounding Baseline for Recognition [Razavian et al, 2014]</p>
+
+<p>DeCAF: A Deep Convolutional Activation Feature for Generic Visual Recognition[Donahue<em>, Jia</em>, et al.,2013]</p>
+
+<h3 id="transfer-learning-">Transfer Learning 规则</h3>
+
+<p><img src="/images/2016-03-26-transfer-learning.png" alt="Transfer Learning" /></p>
+
+<p>Model Zoo</p>
+
+<h2 id="all-about-convolutions">All About Convolutions</h2>
+
+<h3 id="how-to-stack-them">How to stack them</h3>
+
+<ul>
+  <li>Suppose we stack two 3x3 conv layers (stride 1)</li>
+  <li>Each neuron sees 3x3 region of previous activation map</li>
+</ul>
+
+<h4 id="small-fitlers">small fitlers</h4>
+
+<p>Suppose input is H x W x C and we use convolutions with C filters</p>
+
+<p>7x7</p>
+
+<ul>
+  <li>有多少 Weights：$ = C \times (7 \times 7 \times C) = 49 C^2$</li>
+  <li>多少次计算(乘加)：= (H x W x C) x (7 x 7 x C) = 49 $H W C^2$</li>
+</ul>
+
+<p>3x3</p>
+
+<ul>
+  <li>有多少 Weights：$ = 3 \times C \times (3 \times 3 \times C) = 27 C^2$</li>
+  <li>多少次计算(乘加)：= 3 x (H x W x C) x (3 x 3 x C) 27 $H W C^2$</li>
+</ul>
+
+<p>相对于7x7，小的3x3：计算量少，非线性多，相对好</p>
+
+<p><strong>Why stop at 3 x 3 filters? Why not try 1 x 1?</strong></p>
+
+<ol>
+  <li>“bottleneck” 1 x 1 conv to reduce dimension</li>
+</ol>
+
+<p>使用Conv 1x1，C/2 filters</p>
+
+<ol>
+  <li>3 x 3 conv at reduced dimension</li>
+</ol>
+
+<p>使用Conv 3x3，C/2 filters</p>
+
+<ol>
+  <li>Restore dimension with another 1 x 1 conv</li>
+</ol>
+
+<p>使用 Conv 1x1, C filters</p>
+
+<p>[Seen in Lin et al, “Network in Network”,GoogLeNet, ResNet]</p>
+
+<p>1x1，只需要 $3.25 C^2$
+3x3，需要$9 C^2</p>
+
+<p><img src="/images/2016-03-26-why-stop.png" alt="Why stop at 3x3" /></p>
+
+<p>或者在1x1中，不使用3x3，使用1x3,3x1</p>
+
+<p><img src="/images/2016-03-26-why-still-use-3x3-in-1x1.png" alt="why-still-use-3x3-in-1x1" /></p>
+
+<h4 id="googlenet">GoogLeNet</h4>
+
+<p>Szegedy et al, “Rethinking the Inception Architecture for Computer Vision”</p>
+
+<p>大量使用了1x1、3x3</p>
+
+<h4 id="recap">Recap</h4>
+
+<ul>
+  <li>Replace large convolutions (5 x 5, 7 x 7) with stacks of 3 x 3 convolutions</li>
+  <li>1 x 1 “bottleneck” convolutions are very efficient</li>
+  <li>Can factor N x N convolutions into 1 x N and N x 1</li>
+  <li>All of the above give <strong>fewer parameters, less compute, more nonlinearity</strong></li>
+</ul>
+
+<h3 id="how-to-compute-conv">How to compute conv</h3>
+
+<h4 id="im2col">im2col</h4>
+
+<p>将convolution转为matrix multiplication</p>
+
+<p><img src="/images/2016-03-26-im2col.png" alt="im2col" /></p>
+
+<h4 id="fft">FFT</h4>
+
+<p><strong>Not much speedup for 3x3 filters</strong></p>
+
+<p>Convolution Theorem: The convolution of f and g is equal</p>
+
+<script type="math/tex; mode=display">F(f*g) = F(f) \cdot F(g)</script>
+
+<p>Using the Fast Fourier Transform, we can compute the Discrete Fourier transform of an N-dimensional vector in O(N log N) time (also extends to 2D images)</p>
+
+<p>使用FFT来计算Conv</p>
+
+<ol>
+  <li>Compute FFT of weights: F(W)</li>
+  <li>Compute FFT of image: F(X)</li>
+  <li>Compute elementwise product: F(W) ○ F(X)</li>
+  <li>Compute inverse FFT: Y = F-1(F(W) ○ F(X))</li>
+</ol>
+
+<p>Vasilache et al, Fast Convolutional Nets With fbfft: A GPU Performance Evaluation</p>
+
+<h4 id="fast-algorithms">Fast Algorithms</h4>
+
+<p>还没有特别流行，但是很有意思</p>
+
+<p>Lavin and Gray, “Fast Algorithms for Convolutional Neural Networks”, 2015</p>
+
+<h2 id="implementation-detail">Implementation Detail</h2>
+
+<p>NVIDIA vs AMD</p>
+
+<p>NVIDIA is much more common for deep learning</p>
+
+<p><strong>Introduced new Titan X GPU by bragging about AlexNet benchmarks</strong></p>
+
+<p>CUDA (NVIDIA only)
+○ Write C code that runs directly on the GPU
+○ Higher-level APIs: cuBLAS, cuFFT, cuDNN, etc</p>
+
+<p>网课 Udacity: Intro to Parallel Programming <a href="https://www.udacity.com/course/cs344">https://www.udacity.com/course/cs344</a>
+○ For deep learning just use existing libraries</p>
+
+<h3 id="gpu">即便用GPU，训练也是很慢</h3>
+
+<p>VGG: ~2-3 weeks training with 4 GPUs</p>
+
+<p>ResNet 101: 2-3 weeks with 4 GPUs</p>
+
+<h3 id="parallel">Parallel</h3>
+
+<p>Alex Krizhevsky, “One weird trick for parallelizing convolutional neural networks”</p>
+
+<p><img src="/images/2016-03-26-conv-parallel.png" alt="conv parallel promising" /></p>
+
+<p>[Large Scale Distributed Deep Networks, Jeff Dean et al., 2013]</p>
+
+<p><strong>Google: Synchronous vs Async</strong></p>
+
+<p>Abadi et al, “TensorFlow: Large-Scale Machine Learning on Heterogeneous Distributed Systems”</p>
+
+<p>TensorFlow 更多是Distribution</p>
+
+<h1 id="bottlenecks">Bottlenecks</h1>
+
+<p>1、 GPU - CPU communication is a bottleneck.（尤其是小批量的）</p>
+
+<p>解决方法</p>
+
+<p>CPU data prefetch+augment thread running while GPU performs forward/backward pass</p>
+
+<p>Caffe已经做了</p>
+
+<p>2、CPU - disk bottleneck</p>
+
+<p>Hard disk is slow to read from</p>
+
+<p>解决方法，使用SSD</p>
+
+<p>3、GPU memory bottleneck</p>
+
+<p>Titan X: 12 GB &lt;- currently the max GTX 980 Ti: 6 GB</p>
+
+<p>eg：AlexNet: ~3GB needed with batch size 256</p>
+
+<p>4、Floating Point Precision</p>
+
+<ul>
+  <li>
+    <p>64 bit “double” precision is default in a lot of programming</p>
+  </li>
+  <li>
+    <p><strong>32 bit “single” precision is typically used for CNNs for performance</strong></p>
+  </li>
+</ul>
+
+<p>Prediction: 16 bit “half” precision <strong>will be the new standard</strong></p>
+
+<ul>
+  <li>Already supported in cuDNN</li>
+  <li>Nervana（公司名） fp16 kernels are the fastest right now</li>
+  <li>Hardware support in next-gen NVIDIA cards (Pascal)</li>
+  <li>Not yet supported in torch\caffe</li>
+</ul>
+
+<p><strong>How low can we go?</strong></p>
+
+<p>Gupta et al, 2015：Train with 16-bit fixed point with stochastic rounding</p>
+
+<p>Gupta et al, “Deep Learning with Limited Numerical Precision”, ICML 2015</p>
+
+<p>Courbariaux et al, “Training Deep Neural Networks with Low Precision Multiplications”, ICLR 2015</p>
+
+<p><strong>Train with 10-bit activations, 12-bit parameter updates</strong></p>
+
+<p>！！！！2016年的！！！！！！！！</p>
+
+<p>Courbariaux et al, “BinaryNet: Training Deep Neural Networks with Weights and Activations Constrained to +1 or -1”, arXiv 2016</p>
+
+<p>Courbariaux and Bengio, February 9 2016:</p>
+
+<p>● Train with 1-bit activations and weights!
+● All activations and weights are +1 or -1
+● Fast multiplication with bitwise XNOR
+● (Gradients use higher precision)</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/26/lecture-11-convnets-in-practice-stanford-cs231n';
+        var disqus_title = 'CNN使用的一些细节';
+        var disqus_url = 'http://next.sh/blog/2016/03/26/lecture-11-convnets-in-practice-stanford-cs231n';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

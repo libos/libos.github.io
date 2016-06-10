@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OSX How to Disable System Integrity Protection</title>
+    <meta name="description" content="如果想更新Mac OSX中的Python，那么需要关掉系统级的权限保护，否则会导致无法更新，无法安装新的Python包。即便使用Homebrew也是错误连连。">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/13/osx-how-to-disable-system-integrity-protection/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">OSX How to Disable System Integrity Protection</h1>
+      <p class="post-meta">March 13, 2016 &nbsp;&nbsp; 23:11</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/python/index.html" style="font-size: 12px;color:#fff;">Python</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color2" href="/tags/osx/index.html" style="font-size: 12px;color:#fff;">OSX</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>如果想更新Mac OSX中的Python，那么需要关掉系统级的权限保护，否则会导致无法更新，无法安装新的Python包。即便使用Homebrew也是错误连连。</p>
+
+<p>因为在OSX中，如果System Integrity Protection是enable的，</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/System
+/sbin
+/usr <span class="o">(</span>除了/usr/local之外<span class="o">)</span></code></pre></div>
+
+<p>是被锁住的。即便在Terminal中使用sudo，也是不能修改其中的数据的。</p>
+
+<p>如何关掉System Integrity Protection呢？</p>
+
+<ul>
+  <li>重启，按住Command+R键，指导选择启动项</li>
+  <li>选择Recovery Mode</li>
+  <li>Utilities-&gt;Terminal</li>
+  <li>然后输入</li>
+</ul>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">csrutil disable</code></pre></div>
+
+<ul>
+  <li>重启即可</li>
+</ul>
+
+<p>如果想恢复输入命令，重启，进recovery，然后输入</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">csrutil <span class="nb">enable</span></code></pre></div>
+
+<p>即可</p>
+
+<p>hope save your day~</p>
+
+<p>==
+13 March 2016 23:33 Update</p>
+
+<p>过年回来之后就开始懒了，虽然在学习Deep Learning，不过还得加油~</p>
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/13/osx-how-to-disable-system-integrity-protection';
+        var disqus_title = 'OSX How to Disable System Integrity Protection';
+        var disqus_url = 'http://next.sh/blog/2016/03/13/osx-how-to-disable-system-integrity-protection';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

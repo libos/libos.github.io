@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>ConvNet Image定位、监测、可视化笔记CS231n</title>
+    <meta name="description" content="Computer Vision task">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/24/lecture-8-localization--detection-stanford-cs231n/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">ConvNet Image定位、监测、可视化笔记CS231n</h1>
+      <p class="post-meta">March 24, 2016 &nbsp;&nbsp; 11:04</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color1" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="computer-vision-task">Computer Vision task</h2>
+
+<p>Localization和Detection的一大区别是，Localization是定位一个，而Detection是多个</p>
+
+<p>Localization:</p>
+
+<ul>
+  <li>Find a fixed number of objects (one or many)</li>
+  <li>L2 regression from CNN features to box coordinates</li>
+  <li>Much simpler than detection; consider it for your projects!</li>
+  <li>Overfeat: Regression + efficient sliding window with FC -&gt; conv conversion</li>
+  <li>Deeper networks do better</li>
+</ul>
+
+<p>Object Detection:</p>
+
+<ul>
+  <li>Find a variable number of objects by classifying image regions</li>
+  <li>Before CNNs: dense multiscale sliding window (HoG, DPM)</li>
+  <li>Avoid dense sliding window with region proposals</li>
+  <li>R-CNN: Selective Search + CNN classification / regression</li>
+  <li>Fast R-CNN: Swap order of convolutions and region extraction</li>
+  <li>Faster R-CNN: Compute region proposals within the network</li>
+  <li>Deeper networks do better</li>
+</ul>
+
+<h3 id="idea-1-localization-as-regression">Idea #1: Localization as Regression</h3>
+
+<p>use box coordinates (4 numbers)</p>
+
+<p>Step 1: Train (or download) a classification model</p>
+
+<p>Image -&gt; Conv &amp; Pooling -&gt; FInal conv feature map -&gt; FC -&gt; class scores -&gt; softmax</p>
+
+<p>Step 2: Attach new fully-connected “regression head” to the network</p>
+
+<p>“Regression head”</p>
+
+<p>Image -&gt; Conv &amp; Pooling -&gt; FInal conv feature map -&gt; FC -&gt; Box coordinates（real number）</p>
+
+<p>Step 3: Train the regression head only with SGD and L2 loss</p>
+
+<p>Step 4: At test time use both heads</p>
+
+<p>如果有C个Classes</p>
+
+<p>Classification head: C numbers</p>
+
+<p>Regression head: C x 4 numbers</p>
+
+<h3 id="where-to-attach-the-regression-head">Where to attach the regression head?</h3>
+
+<ul>
+  <li>
+    <p>After conv layers: Overfeat, VGG</p>
+  </li>
+  <li>
+    <p>After last FC layer: DeepPose, R-CNN</p>
+  </li>
+</ul>
+
+<h4 id="aside-localizing-multiple-objects">Aside: Localizing multiple objects</h4>
+
+<p>K x 4 numbers
+(one box per object)</p>
+
+<p>Human Pose Estimation</p>
+
+<p>找到关节 joints</p>
+
+<p>Regress (x, y) for each joint from last fully-connected layer of AlexNet</p>
+
+<p>Toshev and Szegedy, “DeepPose: Human Pose Estimation via Deep Neural Networks”, CVPR 2014</p>
+
+<h3 id="idea-2-sliding-window">Idea #2: Sliding Window</h3>
+
+<ul>
+  <li>
+    <p>Run classification + regression network at multiple locations on a high-resolution image</p>
+  </li>
+  <li>
+    <p>Convert fully-connected layers into convolutional layers for efficient computation</p>
+  </li>
+  <li>
+    <p>Combine classifier and
+regressor predictions across all scales for final prediction</p>
+  </li>
+</ul>
+
+<p>L2 distance？？？？？？？？？？？？？？</p>
+
+<h3 id="overfeat">Overfeat</h3>
+
+<p>Classification Head &amp; regression head</p>
+
+<p><strong>Sermanet et al, “Integrated Recognition, Localization and Detection using Convolutional Networks”, ICLR 2014</strong></p>
+
+<p>Greedily merge boxes and scores (details in paper)</p>
+
+<p>示意图：</p>
+
+<p><img src="/images/2016-03-24Overfeat.png" alt="Overfeat" /></p>
+
+<h3 id="efficient-sliding-window-overfeat">Efficient Sliding Window: Overfeat</h3>
+
+<p>Efficient sliding window by converting fully- connected layers into convolutions</p>
+
+<p><img src="/images/2016-03-24-Efficient-Overfeat.png" alt="Efficient Overfeat" /></p>
+
+<p>Softmax loss</p>
+
+<p>Euclidean loss</p>
+
+<h4 id="section">现状</h4>
+
+<ul>
+  <li>
+    <p>AlexNet: Localization method not published</p>
+  </li>
+  <li>
+    <p>Overfeat: Multiscale convolutional regression with box merging</p>
+  </li>
+  <li>
+    <p>VGG: Same as Overfeat(只是deeper了), but fewer scales and locations; simpler method, gains all due to deeper features</p>
+  </li>
+  <li>
+    <p>ResNet: Different localization method (RPN) and much deeper features</p>
+  </li>
+</ul>
+
+<h2 id="regression--classification-are-two-hammers">Regression 和 Classification are two hammers</h2>
+
+<h2 id="detection">Detection</h2>
+
+<p>用Classification</p>
+
+<p>如何定window size</p>
+
+<p><strong>Literally try them all</strong></p>
+
+<p>Q:Need to test many positions and scales</p>
+
+<p>A: if your classifier is a fast enough,just do it.</p>
+
+<p>用Linear classifier 然后使用HOG特征，因为快，所以随便大小</p>
+
+<p>Dalal and Triggs, “Histograms of Oriented Gradients for Human Detection”, CVPR 2005 Slide credit: Ross Girshick</p>
+
+<h2 id="deformable-parts-model-dpm">Deformable Parts Model (DPM)</h2>
+
+<p>Felzenszwalb et al, “Object Detection with Discriminatively Trained Part Based Models”, PAMI 2010</p>
+
+<p>也比较快</p>
+
+<p>Girschick et al,“Deformable Part Models are Convolutional Neural Networks”, CVPR 2015</p>
+
+<p>–
+Problem: Need to test many positions and scales, and use a computationally demanding classifier (CNN)</p>
+
+<p>Solution: Only look at a tiny subset of possible positions</p>
+
+<h3 id="region-proposals">Region Proposals</h3>
+
+<ul>
+  <li>Find “blobby” image regions that are likely to contain objects</li>
+  <li>“Class-agnostic” object detector</li>
+  <li>Look for “blob-like” regions</li>
+</ul>
+
+<h4 id="region-proposals-selective-search">Region Proposals: Selective Search</h4>
+
+<p>！！！！！！！！！！！！！！</p>
+
+<p><strong>Uijlings et al, “Selective Search for Object Recognition”, IJCV 2013</strong></p>
+
+<p><img src="/images/2016-03-24-Selective-Search.png" alt="Selective Search" /></p>
+
+<p>相同的颜色和纹理，然后合并</p>
+
+<p>还有很多其他的方法：</p>
+
+<p><img src="/images/2016-03-24-Region-Proposals.png" alt="Region Proposals" /></p>
+
+<p>Hosang et al, “What makes for effective detection proposals?”, PAMI 2015</p>
+
+<p><strong>EdgeBoxes</strong></p>
+
+<h2 id="r-cnn">R-CNN</h2>
+
+<p>Girschick et al, “Rich feature hierarchies for accurate object detection and semantic segmentation”, CVPR 2014</p>
+
+<p>Region-based</p>
+
+<p>Slide credit: Ross Girschick</p>
+
+<h4 id="r-cnn-training">R-CNN Training</h4>
+
+<p>Step 1: Train (or download) a classification model for ImageNet (AlexNet)</p>
+
+<p>Step 2: Fine-tune model for detection</p>
+
+<ul>
+  <li>Instead of 1000 ImageNet classes, want 20 object classes + background</li>
+  <li>Throw away final fully-connected layer, reinitialize from scratch</li>
+  <li>Keep training model using positive / negative regions from detection images</li>
+</ul>
+
+<p>Step 3: Extract features</p>
+
+<ul>
+  <li>Extract region proposals for all images</li>
+  <li>For each region: warp to CNN input size, run forward through CNN, save pool5 features to disk</li>
+  <li>Have a big hard drive: features are ~200GB for PASCAL dataset!</li>
+</ul>
+
+<p>Step 4: Train one binary SVM per class to classify region features</p>
+
+<p>Step 5 (bbox regression): For each class, train a linear regression model to map from cached features to offsets to GT boxes to make up for “slightly wrong” proposals</p>
+
+<p>Correction</p>
+
+<hr />
+<p>PASCAL VOC (2010)</p>
+
+<ul>
+  <li>Number of images ~20k，Mean objects per image 2.4</li>
+</ul>
+
+<p>ImageNet Detection (ILSVRC 2014)</p>
+
+<ul>
+  <li>Number of images ~470k，Mean objects per image 1.1</li>
+</ul>
+
+<p>MS-COCO (2014) 更有意思</p>
+
+<ul>
+  <li>Number of images ~120k，Mean objects per image 7.2</li>
+</ul>
+
+<hr />
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>We use a metric called “mean average precision” (mAP)</p>
+
+<p>0~100，100 is good</p>
+
+<p>Compute average precision (AP) separately for each class, then average over classes</p>
+
+<p>A detection is a true positive if it has IoU with a ground-truth box greater than some threshold (usually 0.5) (mAP@0.5)</p>
+
+<p>Combine all detections from all test images to draw a precision / recall curve for each class; AP is area under the curve</p>
+
+<p>TL;DR mAP is a number from 0 to 100; high is good</p>
+
+<p>Wang et al, “Regionlets for Generic Object Detection”, ICCV 2013</p>
+
+<h2 id="r-cnn-problems">R-CNN Problems</h2>
+
+<ul>
+  <li>
+    <p>Slow at test-time: need to run full forward pass of CNN for each region proposal</p>
+  </li>
+  <li>
+    <p>SVMs and regressors are post-hoc: CNN features not updated in response to SVMs and regressors</p>
+  </li>
+  <li>
+    <p>Complex multistage training pipeline</p>
+  </li>
+</ul>
+
+<h2 id="fast-r-cnn">Fast R-CNN</h2>
+
+<p>Girschick, “Fast R-CNN”, ICCV 2015</p>
+
+<p>共用一个 ConvNet</p>
+
+<p>Get Region from conv feature map，called ‘Rol pooling layer’</p>
+
+<ul>
+  <li>Share computation of convolutional layers between proposals for an image(解决Slow at test-time)</li>
+  <li>Just train the whole system end-to-end all at once!(解决问题2、3)</li>
+</ul>
+
+<h3 id="region-of-interest-pooling">Region of Interest Pooling</h3>
+
+<p>Hi-res conv features: C x H x W with region proposal</p>
+
+<p>Problem: Fully-connected layers expect low-res conv features: C x h x w</p>
+
+<p>Max-pool within each grid cell</p>
+
+<p>R-CNN</p>
+
+<ul>
+  <li>Training Time 84 hours</li>
+  <li>Speed up 1x</li>
+  <li>Test time per image 47 seconds</li>
+</ul>
+
+<p>Fast R-CNN</p>
+
+<ul>
+  <li>Training Time 9.5 hours</li>
+  <li>Speed up 8.8x</li>
+  <li>Test time per image 0.32 seconds</li>
+</ul>
+
+<p>Just make the CNN do region proposals too!!!</p>
+
+<h2 id="faster-r-cnn">Faster R-CNN</h2>
+
+<p>Insert a Region Proposal Network (RPN) after the last convolutional layer!!!!!!!!!!!!!!!!!!</p>
+
+<p>RPN trained to produce region proposals directly; no need for external region proposals</p>
+
+<p>After RPN, use RoI Pooling and an upstream classifier and bbox regressor just like Fast R-CNN</p>
+
+<p><strong>Ren et al, “Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks”, NIPS 2015</strong></p>
+
+<p>Slide a small window on the feature map</p>
+
+<p>Build a small network for:
+- classifying object or not-object, and 
+- regressing bbox locations</p>
+
+<p>Position of the sliding window provides localization information with reference to the image</p>
+
+<p>Box regression provides finer localization information with reference to this sliding window</p>
+
+<hr />
+<p>使用anchor box，先用预先的几个框试一下
+- Use <strong>N anchor boxes</strong> at each location
+- Anchors are translation invariant: use the same ones at every location
+- Regression gives offsets from anchor boxes (regressed) anchor shows an object</p>
+
+<hr />
+<p>Since publication: Joint training! One network, four losses</p>
+
+<ul>
+  <li>RPN classification (anchor good / bad)</li>
+  <li>RPN regression (anchor -&gt; proposal)</li>
+  <li>Fast R-CNN classification (over classes)</li>
+  <li>Fast R-CNN regression (proposal -&gt; box)</li>
+</ul>
+
+<p>Faster R-CNN</p>
+
+<ul>
+  <li>Test time per image:0.2 seconds</li>
+  <li>(Speedup) 250x</li>
+  <li>mAP (VOC 2007) 66.9</li>
+</ul>
+
+<p><strong>spatial transformer network</strong></p>
+
+<p>binary linear interpolation</p>
+
+<h2 id="object-detection-state-of-the-art">Object Detection State-of-the-art</h2>
+
+<p>ResNet 101 + Faster R-CNN + some extras</p>
+
+<p>He et. al, “Deep Residual Learning for Image Recognition”, arXiv 2015</p>
+
+<p><img src="/images/2016-03-24Ensemble.png" alt="ResNet 101 + Faster R-CNN + some extras" /></p>
+
+<h2 id="yolo-you-only-look-once-detection-as-regression">YOLO: You Only Look Once Detection as Regression</h2>
+
+<p>Divide image into S x S grid</p>
+
+<p>Within each grid cell predict:
+B Boxes: 4 coordinates + confidence Class scores: C numbers</p>
+
+<p>Regression from image to 7 x 7 x (5 * B + C) tensor</p>
+
+<p>Direct prediction using a CNN</p>
+
+<p>Redmon et al, “You Only Look Once:Unified, Real-Time Object Detection”, arXiv 2015</p>
+
+<p>Faster than Faster R-CNN, but not as good</p>
+
+<h1 id="code-links">Code Links</h1>
+
+<h2 id="r-cnn-1">R-CNN</h2>
+
+<p>(Cafffe + MATLAB): https://github.com/rbgirshick/rcnn Probably don’t use this; too slow</p>
+
+<h2 id="fast-r-cnn-1">Fast R-CNN</h2>
+
+<p>(Caffe + MATLAB): https://github.com/rbgirshick/fast-rcnn</p>
+
+<h2 id="faster-r-cnn-1">Faster R-CNN</h2>
+
+<p>(Caffe + MATLAB): https://github.com/ShaoqingRen/faster_rcnn</p>
+
+<p>(Caffe + Python): https://github.com/rbgirshick/py-faster-rcnn</p>
+
+<h2 id="yolo">YOLO</h2>
+
+<p>http://pjreddie.com/darknet/yolo/</p>
+
+<hr />
+<hr />
+
+<h1 id="convnets">ConvNets</h1>
+
+<ul>
+  <li>Visualize patches that maximally activate neurons</li>
+  <li>Visualize the weights</li>
+  <li>Visualize the representation space (e.g. with t-SNE)</li>
+  <li>Occlusion experiments</li>
+  <li>Human experiment comparisons</li>
+  <li>Deconv approaches (single backward pass)</li>
+  <li>Optimization over image approaches (optimization)</li>
+</ul>
+
+<h2 id="t-sne-visualization">t-SNE visualization</h2>
+
+<p>Embed high-dimensional points so that locally, pairwise distances are conserved</p>
+
+<p>i.e. similar things end up in similar places. dissimilar things end up wherever</p>
+
+<h2 id="occlusion-experiments">Occlusion experiments</h2>
+
+<p>[Zeiler &amp; Fergus 2013]</p>
+
+<p>as a function of the position of the square of zeros in the original image</p>
+
+<p><a href="http://lvdmaaten.github.io/tsne/">t-SNE</a></p>
+
+<p><a href="http://yosinski.com/deepvis">Deep Visualization Toolbox</a></p>
+
+<h2 id="deconv-approaches">Deconv approaches</h2>
+
+<ol>
+  <li>Feed image into net</li>
+  <li>Pick a layer, set the gradient there to be all zero except for one 1 for some neuron of interest</li>
+  <li>Backprop to image(“Guided backpropagation:” instead)</li>
+</ol>
+
+<p>[Visualizing and Understanding Convolutional Networks, Zeiler and Fergus 2013]</p>
+
+<p>[Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps, Simonyan et al., 2014]</p>
+
+<p>[Striving for Simplicity: The all convolutional net, Springenberg, Dosovitskiy, et al., 2015]</p>
+
+<p>Backward pass for a ReLU (will be changed in Guided Backprop)</p>
+
+<p><img src="/images/2016-03-24-Deconv-approaches.png" alt="Deconv approches" /></p>
+
+<p>guided bp vs backward pass</p>
+
+<h2 id="optimization-to-image">Optimization to Image</h2>
+
+<p>Q: can we find an image that maximizes some class score?
+！！！！！！！！！</p>
+
+<ol>
+  <li>
+    <p>feed in zeros.</p>
+  </li>
+  <li>
+    <p>set the gradient of the scores vector to be [0,0,….1,….,0], then backprop to image</p>
+  </li>
+  <li>
+    <p>do a small “image update”</p>
+  </li>
+  <li>
+    <p>forward the image through the network.</p>
+  </li>
+  <li>
+    <p>go back to 2.</p>
+  </li>
+</ol>
+
+<hr />
+
+<h3 id="visualize-the-data-gradient">Visualize the Data gradient:</h3>
+
+<p>[Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps]</p>
+
+<p>Karen Simonyan, Andrea Vedaldi, Andrew Zisserman, 2014</p>
+
+<p>at each pixel take abs val, and max over channels</p>
+
+<p><strong>Use grabcut for segmentation</strong></p>
+
+<hr />
+
+<ol>
+  <li>Forward an image</li>
+  <li>Set activations in layer of interest to all zero, except for a 1.0 for a neuron of interest</li>
+  <li>Backprop to image</li>
+  <li>Do an “image update”</li>
+</ol>
+
+<p>Proposed a different form of regularizing the image</p>
+
+<p>Repeat:
+- Update the image x with gradient from some unit of interest
+- Blur x a bit
+- Take any pixel with small norm to zero (to encourage sparsity)</p>
+
+<h3 id="given-a-cnn-code-is-it-possible-to-reconstruct-the-original-image">Given a CNN code, is it possible to reconstruct the original image?</h3>
+
+<p>Reconstructions from the representation after last last pooling layer(immediately before the first Fully Connected layer)</p>
+
+<p><img src="/images/2016-03-24-pooling-layer-befor-fc.png" alt="Reconstructions from the representation after last last pooling layer" /></p>
+
+<p>Reconstructions from intermediate layers</p>
+
+<p><img src="/images/2016-03-24-intermediate-layers.png" alt="intermediate layers" /></p>
+
+<h2 id="deep-dream">Deep Dream</h2>
+
+<p>DeepDream modifies the image in a way that “boosts” all activations, at any layer</p>
+
+<p>对某个neuron刺激最强的那个==</p>
+
+<h2 id="neural-style">Neural Style</h2>
+
+<p>Step 1: Extract content targets (ConvNet activations of all layers for the given content image)</p>
+
+<p>Step 2: Extract style targets (Gram matrices of ConvNet activations of all layers for the given style image)</p>
+
+<p>Step 3: Optimize over image to have:</p>
+
+<ul>
+  <li>The content of the content image (activations match content)</li>
+  <li>The style of the style image (Gram matrices of activations match style)</li>
+</ul>
+
+<h2 id="question-can-we-use-this-to-fool-convnets">Question: Can we use this to “fool” ConvNets?</h2>
+
+<p>[Intriguing properties of neural networks, Szegedy et al., 2013]</p>
+
+<p>[Deep Neural Networks are Easily Fooled: High Confidence Predictions for Unrecognizable Images Nguyen, Yosinski, Clune, 2014]</p>
+
+<p>“primary cause of neural networks’ vulnerability to adversarial perturbation is their linear nature“</p>
+
+<p>EXPLAINING AND HARNESSING ADVERSARIAL EXAMPLES
+[Goodfellow, Shlens &amp; Szegedy, 2014]</p>
+
+<p>In particular, this is not a problem with Deep Learning, and has little to do with ConvNets specifically. Same issue would come up with Neural Nets in any other modalities.</p>
+
+<p>反向加入然后拒绝</p>
+
+<p>Backpropping to the image is powerful. It can be used for:</p>
+
+<ul>
+  <li>Understanding (e.g. visualize optimal stimuli for arbitrary neurons)</li>
+  <li>Segmenting objects in the image (kind of)</li>
+  <li>Inverting codes and introducing privacy concerns</li>
+  <li>Fun (NeuralStyle/DeepDream)</li>
+  <li>Confusion and chaos (Adversarial examples)</li>
+</ul>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/24/lecture-8-localization--detection-stanford-cs231n';
+        var disqus_title = 'ConvNet Image定位、监测、可视化笔记CS231n';
+        var disqus_url = 'http://next.sh/blog/2016/03/24/lecture-8-localization--detection-stanford-cs231n';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

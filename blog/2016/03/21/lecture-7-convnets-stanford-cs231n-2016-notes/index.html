@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>卷积神经网络正式内容笔记 Stanford CS231n 2016</title>
+    <meta name="description" content="ConvNets">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/21/lecture-7-convnets-stanford-cs231n-2016-notes/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">卷积神经网络正式内容笔记 Stanford CS231n 2016</h1>
+      <p class="post-meta">March 21, 2016 &nbsp;&nbsp; 21:25</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="convnets">ConvNets</h2>
+
+<h2 id="mathematically">Mathematically</h2>
+
+<p>32<em>32</em>3(3 channels) Image</p>
+
+<p>filter:5<em>5</em>3 filter 
+- <strong>Convolve</strong> the filter with the image: Slide over the image spatially</p>
+
+<p>activation map =&gt; 28 * 28 * 1，使用的是$w^T x +b$</p>
+
+<p>then,there is a second filter(5<em>5</em>3).then there is another activation map.</p>
+
+<p>if we had 6 5x5 filters, we’ll get 6 separate activation maps.</p>
+
+<p>stack up to get 28<em>28</em>6 new image,This operation name convolution.</p>
+
+<h3 id="conv-relu">Conv ReLU</h3>
+
+<p>Conv -&gt; ReLU -&gt; Pool -&gt; Conv -&gt; ReLU -&gt; Pool -&gt; …-&gt; Pool -&gt;FC -&gt; Output</p>
+
+<h3 id="common-to-zero-pad-the-border">Common to zero pad the border</h3>
+
+<ul>
+  <li><strong>边界加上一圈border ，0 Pixel</strong></li>
+  <li>一般stride 1</li>
+  <li>Conv每层都在减少（减小的太快不好）所以要加padding，加边界</li>
+</ul>
+
+<p>eg:32x32 input convolved repeatedly with 5x5 filters shrinks volumes spatially! (32 -&gt; 28 -&gt; 24 …). Shrinking too fast is not good, doesn’t work well.</p>
+
+<p>Each filter has 5<em>5</em>3 + 1 = 76 params (+1 for bias)</p>
+
+<p>76*10</p>
+
+<h3 id="summary">Summary</h3>
+
+<p>输入长宽深度：$W_1 \times H_1 \times D_1$</p>
+
+<p>4个参数：
+- K filter的个数 number of filters ，K是2的次幂powers of 2 eg 32,64,128
+- F 空间范围 spatial extent filter的空间范围
+- S 步长 stride
+- P 0 padding的总数</p>
+
+<p>Common settings:</p>
+
+<p>K = (powers of 2, e.g. 32, 64, 128, 512)
+- F = 3, S = 1, P = 1
+- F = 5, S = 1, P = 2
+- F = 5, S = 2, P = ? (whatever fits)
+- F = 1, S = 1, P = 0</p>
+
+<p>1x1 的过滤，为了深度</p>
+
+<p>F一般都是odd，奇数~</p>
+
+<p>默认都处理正方形</p>
+
+<p>一般不会去在一层里用多种大小的Filter</p>
+
+<p>计算得到第二层的长宽深度：
+<script type="math/tex">W_2 = (W_1 - F + 2 P) / S + 1
+H_2 = (H_1 - F + 2 P) / S + 1
+D_2 = K</script></p>
+
+<p>因为参数共享，每个过滤器有$F \cdot F \cdot D_1$这么多weights参数，一共有$(F \cdot F \cdot D_1) \cdot K$ + K biases</p>
+
+<p>输出一共有d-th层$ W_2 \times H_2$的卷积结果</p>
+
+<h2 id="conv-layerneuron-view">把Conv Layer变成Neuron View</h2>
+
+<p>An activation map is a 28x28 sheet of neuron outputs:
+1. Each is connected to a small region in the input
+2. <strong>All of them share parameters</strong> 因为都是用一个filter变过来的</p>
+
+<p>“5x5 filter” -&gt; “5x5 receptive field for each neuron”</p>
+
+<h2 id="pool--fc">Pool / FC</h2>
+
+<h3 id="pooling-layers">Pooling Layers</h3>
+
+<p>做 downsampling，例如从224<em>224</em>64-&gt;112<em>112</em>64</p>
+
+<ul>
+  <li>makes the representations smaller and more manageable</li>
+  <li>operates over each activation map independently:</li>
+</ul>
+
+<p>downsampling最常用的是 max pool 用一个2x2的filter，步长为2来求max</p>
+
+<p>Pooling不改变 Depth</p>
+
+<h3 id="fully-connected-layer-fc">Fully Connected Layer （FC）</h3>
+
+<ul>
+  <li>Contains neurons that connect to the entire input volume, as in ordinary Neural Networks</li>
+</ul>
+
+<p><a href="http://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html">JavaScript Demo</a></p>
+
+<p>可视化很困难</p>
+
+<h3 id="case-study">Case Study</h3>
+
+<ul>
+  <li>LeCUN 1998</li>
+</ul>
+
+<p>Conv-&gt;SubSampleing-&gt;Conv-&gt;Sub-&gt;FC-&gt;FC-&gt;GC</p>
+
+<h2 id="alexnet">AlexNet</h2>
+
+<p>8 layers</p>
+
+<p>input : 227<em>227</em>3 images</p>
+
+<p>当时GPU Mem不够，所以用了两条分离的线（不考虑）</p>
+
+<p>First Layer： 96 11*11 filters</p>
+
+<p>=&gt; Output: 55<em>55</em>96</p>
+
+<p>Parameters: 11<em>11</em>3 *96 = 35K</p>
+
+<p>Second Layer: POOL1 : 3x3 at stride 2.No paramter</p>
+
+<p>Pool layer是没有parameters的</p>
+
+<p>Details/Retrospectives:
+- first use of ReLU
+- used Norm layers (not common anymore) - heavy data augmentation
+- dropout 0.5  最后几层FC
+- batch size 128
+- SGD Momentum 0.9
+- Learning rate 1e-2, reduced by 10 manually when val accuracy plateaus
+- L2 weight decay 5e-4
+- 7 CNN ensemble: 18.2% -&gt; 15.4%</p>
+
+<p>FC7 feature，再分类之前的最后一次FC</p>
+
+<h2 id="zfnet">ZFNet</h2>
+
+<p>8 layers</p>
+
+<p>[Zeiler and Fergus, 2013]</p>
+
+<p>AlexNet but:</p>
+
+<ul>
+  <li>CONV1: change from (11x11 stride 4) to (7x7 stride 2)</li>
+  <li>CONV3,4,5: instead of 384, 384, 256 filters use 512, 1024, 512</li>
+</ul>
+
+<p>ImageNet top 5 error: 15.4% -&gt; 14.8%</p>
+
+<h2 id="vggnet">VGGNet</h2>
+
+<p>19 layers</p>
+
+<p>[Simonyan and Zisserman, 2014]</p>
+
+<p>Only 3x3 CONV stride 1, pad 1 and 2x2 MAX POOL stride 2</p>
+
+<p>19层，11.2% top 5 error in ILSVRC 2013 -&gt;
+7.3% top 5 error</p>
+
+<p>主要params在FC层</p>
+
+<h2 id="googlenet">GoogLeNet</h2>
+
+<p>22 layers</p>
+
+<p>[Szegedy et al., 2014]</p>
+
+<p>Inception Module</p>
+
+<p>Inception Layers ，Average</p>
+
+<p>reduce computation &amp; memory</p>
+
+<h2 id="resnet">ResNet</h2>
+
+<p>152 layers [He et al., 2015]</p>
+
+<p><strong>并不知道何时converge…可能仅仅是训练了两周了，累了….</strong></p>
+
+<p>ILSVRC 2015 winner (3.6% top 5 error)</p>
+
+<p>plain net vs res net</p>
+
+<ul>
+  <li>2-3 weeks of training on 8 GPU machine</li>
+  <li>at runtime: <strong>faster</strong> than a VGGNet! (even though it has 8x more layers)</li>
+</ul>
+
+<p>Skip connections</p>
+
+<p><img src="/images/2016-03-23-res-vs-plain.png" alt="res net vs plain net" /></p>
+
+<p><img src="/images/2016-03-23-resnet.png" alt="res net vs plain net" /></p>
+
+<ul>
+  <li>Batch Normalization after every CONV layer</li>
+  <li>Xavier/2 initialization from He et al.</li>
+  <li>SGD + Momentum (0.9)</li>
+  <li>Learning rate: 0.1, divided by 10 when validation error plateaus</li>
+  <li>Mini-batch size 256</li>
+  <li>Weight decay of 1e-5</li>
+  <li>No dropout used</li>
+</ul>
+
+<h2 id="alpha-go">Alpha Go</h2>
+
+<p>policy network</p>
+
+<p>[19x19x48] Input
+- CONV1: 192 5x5 filters , stride 1, pad 2 =&gt; [19x19x192]
+- CONV2..12: 192 3x3 filters, stride 1, pad 1 =&gt; [19x19x192]
+- CONV: 1 1x1 filter, stride 1, pad 0 =&gt; [19x19] =&gt; probability map of promising moves</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/21/lecture-7-convnets-stanford-cs231n-2016-notes';
+        var disqus_title = '卷积神经网络正式内容笔记 Stanford CS231n 2016';
+        var disqus_url = 'http://next.sh/blog/2016/03/21/lecture-7-convnets-stanford-cs231n-2016-notes';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

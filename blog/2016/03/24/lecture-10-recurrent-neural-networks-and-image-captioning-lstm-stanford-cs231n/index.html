@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RNN、Image Captioning和LSTM笔记 Stanford CS231n</title>
+    <meta name="description" content="Recurrent Neural Network">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/24/lecture-10-recurrent-neural-networks-and-image-captioning-lstm-stanford-cs231n/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">RNN、Image Captioning和LSTM笔记 Stanford CS231n</h1>
+      <p class="post-meta">March 24, 2016 &nbsp;&nbsp; 18:31</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/rnn/index.html" style="font-size: 12px;color:#fff;">RNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="recurrent-neural-network">Recurrent Neural Network</h2>
+
+<p>CNN</p>
+
+<p>fixed size image -&gt; fixed size of vector label</p>
+
+<p>-one to one</p>
+
+<p>Image Captioning</p>
+
+<ul>
+  <li>image -&gt; sequence of words</li>
+</ul>
+
+<p>Sentiment Classification</p>
+
+<ul>
+  <li>sequence of words -&gt; sentiment(positive or negative)</li>
+</ul>
+
+<p>Machine Translation</p>
+
+<ul>
+  <li>seq -&gt; seq of words</li>
+</ul>
+
+<p>Video classification on frame level</p>
+
+<ul>
+  <li>before the frame</li>
+</ul>
+
+<p><strong>Process sequentially</strong></p>
+
+<p>fixed inputs vs fixed outputs</p>
+
+<ul>
+  <li>Visual Attention Ba et al</li>
+  <li>Draw a RNN for Image Generation Gregor et al</li>
+</ul>
+
+<h3 id="rnn">RNN</h3>
+
+<p>It has state.through time,feed input vector into RNN.State changing as received input vectors.</p>
+
+<p>usually we can predict a vector at some time steps.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">y 
+^
+<span class="p">|</span>
+RNN&lt;-self 
+^
+<span class="p">|</span>
+x</code></pre></div>
+
+<p>base on RNN to predict</p>
+
+<p>has states</p>
+
+<p>We can process a sequence of vectors X by applying a recurrence formula at every time step.</p>
+
+<script type="math/tex; mode=display">h_t = f_W (h_{t-1} , x_t)</script>
+
+<p>$h_t$ is new state,$h_{t-1}$ is old state,$f_W$ is <strong>the recurrent function</strong> with parameters $W$.</p>
+
+<p>训练出$f_W$里的$W$，使用的时候，use $f_W$ at every single step no matter how long the input or output sequences are.</p>
+
+<h3 id="vanilla-rnn">Vanilla RNN</h3>
+
+<p>Simplest.</p>
+
+<p>a single hidden vector $h$.</p>
+
+<script type="math/tex; mode=display">h_t = tanh(W_{hh} h_{t-1} + W_{xh} x_t) \\
+y_t = W_{hy} h_t</script>
+
+<p>feed character one at a time into RNN.</p>
+
+<p><img src="/images/2016-03-24-RNN-intuition.png" alt="Character-level language model example" /></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># data I/O</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;input.txt&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c"># should be simple plain text file</span>
+<span class="n">chars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+<span class="n">data_size</span><span class="p">,</span> <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&#39;data has </span><span class="si">%d</span><span class="s"> characters, </span><span class="si">%d</span><span class="s"> unique.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data_size</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span>
+<span class="n">char_to_ix</span> <span class="o">=</span> <span class="p">{</span> <span class="n">ch</span><span class="p">:</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="p">}</span>
+<span class="n">ix_to_char</span> <span class="o">=</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span><span class="n">ch</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="c"># hyperparameters</span>
+<span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">100</span> <span class="c"># size of hidden layer of neurons</span>
+<span class="n">seq_length</span> <span class="o">=</span> <span class="mi">25</span> <span class="c"># number of steps to unroll the RNN for 必须在内存里都存了，用chunk</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-1</span>
+
+<span class="c"># model parameters</span>
+<span class="n">Wxh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">)</span><span class="o">*</span><span class="mf">0.01</span> <span class="c"># input to hidden</span>
+<span class="n">Whh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span><span class="o">*</span><span class="mf">0.01</span> <span class="c"># hidden to hidden</span>
+<span class="n">Why</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span><span class="o">*</span><span class="mf">0.01</span> <span class="c"># hidden to output</span>
+<span class="n">bh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">hidden_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c"># hidden bias</span>
+<span class="n">by</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c"># output bias</span>
+
+<span class="k">def</span> <span class="nf">lossFun</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">hprev</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  inputs,targets are both list of integers.</span>
+<span class="sd">  hprev is Hx1 array of initial hidden state</span>
+<span class="sd">  returns the loss, gradients on model parameters, and last hidden state</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">xs</span><span class="p">,</span> <span class="n">hs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">ps</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{}</span>
+  <span class="n">hs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hprev</span><span class="p">)</span>
+  <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="c"># forward pass (compute loss)</span>
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)):</span>
+    <span class="n">xs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">vocab_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="c"># encode in 1-of-k representation</span>
+    <span class="n">xs</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">inputs</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Wxh</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Whh</span><span class="p">,</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">bh</span><span class="p">)</span> <span class="c"># hidden state (RNN的部分)</span>
+    <span class="n">ys</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Why</span><span class="p">,</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">by</span> <span class="c"># unnormalized log probabilities for next chars</span>
+    <span class="n">ps</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span> <span class="c"># probabilities for next chars</span>
+    <span class="n">loss</span> <span class="o">+=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">targets</span><span class="p">[</span><span class="n">t</span><span class="p">],</span><span class="mi">0</span><span class="p">])</span> <span class="c"># softmax (cross-entropy loss)</span>
+  <span class="c"># backward pass: compute gradients going backwards</span>
+  <span class="n">dWxh</span><span class="p">,</span> <span class="n">dWhh</span><span class="p">,</span> <span class="n">dWhy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Wxh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Whh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Why</span><span class="p">)</span>
+  <span class="n">dbh</span><span class="p">,</span> <span class="n">dby</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">bh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+  <span class="n">dhnext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">hs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">))):</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+    <span class="n">dy</span><span class="p">[</span><span class="n">targets</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">-=</span> <span class="mi">1</span> <span class="c"># backprop into y</span>
+    <span class="n">dWhy</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">dby</span> <span class="o">+=</span> <span class="n">dy</span>
+    <span class="n">dh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Why</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span> <span class="o">+</span> <span class="n">dhnext</span> <span class="c"># backprop into h</span>
+    <span class="n">dhraw</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">*</span> <span class="n">dh</span> <span class="c"># backprop through tanh nonlinearity</span>
+    <span class="n">dbh</span> <span class="o">+=</span> <span class="n">dhraw</span>
+    <span class="n">dWxh</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dhraw</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">dWhh</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dhraw</span><span class="p">,</span> <span class="n">hs</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">dhnext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Whh</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dhraw</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">dparam</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dWxh</span><span class="p">,</span> <span class="n">dWhh</span><span class="p">,</span> <span class="n">dWhy</span><span class="p">,</span> <span class="n">dbh</span><span class="p">,</span> <span class="n">dby</span><span class="p">]:</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dparam</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">dparam</span><span class="p">)</span> <span class="c"># clip to mitigate exploding gradients</span>
+  <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">dWxh</span><span class="p">,</span> <span class="n">dWhh</span><span class="p">,</span> <span class="n">dWhy</span><span class="p">,</span> <span class="n">dbh</span><span class="p">,</span> <span class="n">dby</span><span class="p">,</span> <span class="n">hs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="c"># weight maxtrices</span>
+
+<span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">seed_ix</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> 
+  <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">  sample a sequence of integers from the model </span>
+<span class="sd">  h is memory state, seed_ix is seed letter for first time step</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="n">x</span><span class="p">[</span><span class="n">seed_ix</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">ixes</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Wxh</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Whh</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="n">bh</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Why</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="n">by</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">x</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ixes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ixes</span>
+
+<span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">mWxh</span><span class="p">,</span> <span class="n">mWhh</span><span class="p">,</span> <span class="n">mWhy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Wxh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Whh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Why</span><span class="p">)</span>
+<span class="n">mbh</span><span class="p">,</span> <span class="n">mby</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">bh</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">by</span><span class="p">)</span> <span class="c"># memory variables for Adagrad</span>
+<span class="n">smooth_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">vocab_size</span><span class="p">)</span><span class="o">*</span><span class="n">seq_length</span> <span class="c"># loss at iteration 0</span>
+
+<span class="c"># Main Loop，a batch(25) of data</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+  <span class="c"># prepare inputs (we&#39;re sweeping from left to right in steps seq_length long)</span>
+  <span class="k">if</span> <span class="n">p</span><span class="o">+</span><span class="n">seq_length</span><span class="o">+</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+    <span class="n">hprev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">hidden_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="c"># reset RNN memory</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span> <span class="c"># go from start of data</span>
+  <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">char_to_ix</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">p</span><span class="p">:</span><span class="n">p</span><span class="o">+</span><span class="n">seq_length</span><span class="p">]]</span>
+  <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">char_to_ix</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">p</span><span class="o">+</span><span class="n">seq_length</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span>
+
+  <span class="c"># sample from the model now and then</span>
+  <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">sample_ix</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">hprev</span><span class="p">,</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ix_to_char</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">sample_ix</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;----</span><span class="se">\n</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="se">\n</span><span class="s">----&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="p">)</span>
+
+  <span class="c"># forward seq_length characters through the net and fetch gradient</span>
+  <span class="n">loss</span><span class="p">,</span> <span class="n">dWxh</span><span class="p">,</span> <span class="n">dWhh</span><span class="p">,</span> <span class="n">dWhy</span><span class="p">,</span> <span class="n">dbh</span><span class="p">,</span> <span class="n">dby</span><span class="p">,</span> <span class="n">hprev</span> <span class="o">=</span> <span class="n">lossFun</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">hprev</span><span class="p">)</span>
+  <span class="n">smooth_loss</span> <span class="o">=</span> <span class="n">smooth_loss</span> <span class="o">*</span> <span class="mf">0.999</span> <span class="o">+</span> <span class="n">loss</span> <span class="o">*</span> <span class="mf">0.001</span>
+  <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;iter </span><span class="si">%d</span><span class="s">, loss: </span><span class="si">%f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">smooth_loss</span><span class="p">)</span> <span class="c"># print progress</span>
+  
+  <span class="c"># perform parameter update with Adagrad</span>
+  <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">dparam</span><span class="p">,</span> <span class="n">mem</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">Wxh</span><span class="p">,</span> <span class="n">Whh</span><span class="p">,</span> <span class="n">Why</span><span class="p">,</span> <span class="n">bh</span><span class="p">,</span> <span class="n">by</span><span class="p">],</span> 
+                                <span class="p">[</span><span class="n">dWxh</span><span class="p">,</span> <span class="n">dWhh</span><span class="p">,</span> <span class="n">dWhy</span><span class="p">,</span> <span class="n">dbh</span><span class="p">,</span> <span class="n">dby</span><span class="p">],</span> 
+                                <span class="p">[</span><span class="n">mWxh</span><span class="p">,</span> <span class="n">mWhh</span><span class="p">,</span> <span class="n">mWhy</span><span class="p">,</span> <span class="n">mbh</span><span class="p">,</span> <span class="n">mby</span><span class="p">]):</span>
+    <span class="n">mem</span> <span class="o">+=</span> <span class="n">dparam</span> <span class="o">*</span> <span class="n">dparam</span>
+    <span class="n">param</span> <span class="o">+=</span> <span class="o">-</span><span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dparam</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mem</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span> <span class="c"># adagrad update</span>
+
+  <span class="n">p</span> <span class="o">+=</span> <span class="n">seq_length</span> <span class="c"># move data pointer</span>
+  <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c"># iteration counter</span></code></pre></div>
+
+<h2 id="searching-for-interpretable-cells">Searching for interpretable cells</h2>
+
+<p><a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">karpathy 的博客</a></p>
+
+<p>[Visualizing and Understanding Recurrent Networks, Andrej Karpathy<em>, Justin Johnson</em>, Li Fei-Fei]</p>
+
+<ul>
+  <li>quote detection cell</li>
+  <li>line length tracking cell</li>
+  <li>if statement cell</li>
+  <li>quote/comment cell</li>
+  <li>code depth cell</li>
+</ul>
+
+<p>Image Captioning Sentence Datasets</p>
+
+<p><a href="mscoco.org">Microsoft COCO Tsung-Yi Lin et al. 2014</a></p>
+
+<h2 id="lstm">LSTM</h2>
+
+<p>Show Attend and Tell, Xu et al., 2015</p>
+
+<p>得到RNN的结果，用这个结果去看下一步去哪里找</p>
+
+<p>RNN attends spatially to different parts of images while generating each word of the sentence</p>
+
+<p><img src="/images/2016-03-24-RNN-to-LSTM.png" alt="RNN with attention over the image" /></p>
+
+<p>RNN stack layers,<strong>depth</strong> and <strong>time</strong></p>
+
+<h3 id="lstm-long-short-term-memory">LSTM (Long short term memory)</h3>
+
+<p>[Hochreiter et al., 1997]</p>
+
+<p><img src="/images/2016-03-24-LSTM-formula.png" alt="LSTM formula" /></p>
+
+<p>$c_t$ cell state vector</p>
+
+<h4 id="rnn-vs-lstm">RNN vs LSTM</h4>
+
+<p><img src="/images/2016-03-24-RNN-vs-LSTM.png" alt="RNN vs LSTM" /></p>
+
+<p>ignoring forget gates</p>
+
+<p>就和“PlainNets” vs. ResNets一样，一个是add，一个是直接传递</p>
+
+<p><img src="/images/2016-03-24-ResNet-vs-PlainNet.png" alt="ResNet vs plainNet" /></p>
+
+<p>RNN 和 LSTM 视觉区别，gradient的变化，RNN很多gradient在传递过来承重逐渐的die了。LSTM is super highway pipeline.</p>
+
+<p><a href="http://imgur.com/gallery/vaNahKE">视觉区别视频</a></p>
+
+<h3 id="rnn-">RNN 的不稳定性</h3>
+
+<p>因为代码里有个</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">Whh</span> <span class="o">=</span> np.random.randn<span class="o">(</span>H,H<span class="o">)</span>
+...
+dss<span class="o">[</span>t<span class="o">]</span> <span class="o">=</span> <span class="o">(</span>hs<span class="o">[</span>t<span class="o">]</span> &gt; 0<span class="o">)</span> * dhs<span class="o">[</span>t<span class="o">]</span><span class="p">;</span>
+dhs<span class="o">[</span>t-1<span class="o">]</span> <span class="o">=</span> np.dot<span class="o">(</span>Whh.T,dss<span class="o">[</span>t<span class="o">])</span></code></pre></div>
+
+<p>导致
+if the largest eigenvalue is &gt; 1, gradient will explode （如果太大了，控制住==，大于多少就不增加了）</p>
+
+<p>if the largest eigenvalue is &lt; 1, gradient will vanish</p>
+
+<h3 id="thesis">Thesis</h3>
+
+<p>[On the difficulty of training Recurrent Neural Networks, Pascanu et al., 2013]</p>
+
+<p>[LSTM: A Search Space Odyssey,Greff et al., 2015]</p>
+
+<p>[An Empirical Exploration of Recurrent Network Architectures,Jozefowicz et al., 2015]</p>
+
+<h4 id="gru-changed-lstm-">GRU changed LSTM 变量少了</h4>
+
+<p>GRU [Learning phrase representations using rnn encoder-decoder for statistical machine translation, Cho et al. 2014]</p>
+
+<p>Raw RNN 工作并不是特别好</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/24/lecture-10-recurrent-neural-networks-and-image-captioning-lstm-stanford-cs231n';
+        var disqus_title = 'RNN、Image Captioning和LSTM笔记 Stanford CS231n';
+        var disqus_url = 'http://next.sh/blog/2016/03/24/lecture-10-recurrent-neural-networks-and-image-captioning-lstm-stanford-cs231n';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>

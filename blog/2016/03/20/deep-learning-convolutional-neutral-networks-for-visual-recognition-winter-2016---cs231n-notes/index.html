@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>深度学习卷积神经网络(斯坦福2016 CS231n)笔记</title>
+    <meta name="description" content="CS231n Lecture 3 第三个视频笔记">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/monokai-sublime.css">
+    <link rel="canonical" href="http://next.sh/blog/2016/03/20/deep-learning-convolutional-neutral-networks-for-visual-recognition-winter-2016---cs231n-notes/">
+    <link rel="alternate" type="application/rss+xml" title="Libo's Blog" href="http://next.sh/feed.xml" />
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?6c9fcf4561e75bd2a6bb1aa43a6b82f1";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+  <div class="container">
+    <h1><a href="/blog/">Libo's <span>Blog</span></a></h1>
+
+    <button type="button" class="sliding-panel-button">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="navbar sliding-panel-content">
+      <ul>
+        
+          <li><a href="/about" title="About">About</a></li>
+        
+          <li><a href="/blog" title="Blog">Blog</a></li>
+        
+        <li><a href="https://github.com/libos/libos.github.io" title="Github Repo">Github</a></li>
+        <li><a href="/feed.xml" target="_blank"><i class="icon icon-feed"></i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="sliding-panel-fade-screen"></div>
+
+
+      <div class="container">
+        <article role="article" class="post">
+
+  <div class="card">
+    <header class="post-header">
+      <h1 class="post-title">深度学习卷积神经网络(斯坦福2016 CS231n)笔记</h1>
+      <p class="post-meta">March 20, 2016 &nbsp;&nbsp; 20:55</p>
+      
+      <div class="article-info article-info-post">
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list">
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/machine learning/index.html" style="font-size: 12px;color:#fff;">Machine Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/deep learning/index.html" style="font-size: 12px;color:#fff;">Deep Learning</a>
+          </li>
+        
+          <li class="article-tag-list-item">
+            <a class="color4" href="/tags/cnn/index.html" style="font-size: 12px;color:#fff;">CNN</a>
+          </li>
+        
+        </ul>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="cs231n-lecture-3-">CS231n Lecture 3 第三个视频笔记</h2>
+
+<p>SVM &amp;&amp; Softmax &amp;&amp; Learning Rates &amp;&amp; Gradient Check &amp;&amp; Mini-batch Gradient Descent</p>
+
+<h3 id="svm-loss-function">SVM loss function</h3>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">L_i_vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">W</span><span class="p">):</span>
+	<span class="n">scores</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+	<span class="n">margins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">scores</span> <span class="o">-</span> <span class="n">scores</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">margins</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>   <span class="c">#只是为了不等于1</span>
+	<span class="n">loss_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">margins</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">loss_i</span></code></pre></div>
+
+<p>Regularization motivation</p>
+
+<p>Take all X into account</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">lambda</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">(</span><span class="n">W</span><span class="p">))</span></code></pre></div>
+
+<p>R(w)可能情况</p>
+
+<p>L2 regularization: R(W) = square(W)</p>
+
+<p>L1 regularization: R(W) = abs(W)       — feature selection</p>
+
+<p>Elastic net(L1+L2):R(W) = \beta.dot(W.dot(W)) + abs(W)</p>
+
+<p>Max norm regularization</p>
+
+<p>Dropout</p>
+
+<h3 id="softmax-classifiermultinomial-logistic-regression">Softmax Classifier(Multinomial Logistic Regression)</h3>
+
+<p>scores = unnormalized log probabilities of the classes.</p>
+
+<script type="math/tex; mode=display">P(Y=k \| X=xi) = \frac{e^{S_k}}{\sum_j e^{S_j})} ;S = f(x_i;W,b)) = W x_i + b</script>
+
+<p>maximize the log likelihood or minimize the negative log likelihood</p>
+
+<p>Loss:
+Li = -log(P(Y=yi|X=xi))</p>
+
+<h4 id="softmax-vs-svm">Softmax vs. SVM</h4>
+
+<p>if changing its score slightly,SVM doesn’t care.Softmax will change a lot.</p>
+
+<script type="math/tex; mode=display">L = \frac{1}{N} \sum_i \sum_{j \neq y_i} \max(0,f_j - f_{y_i} + 1) + \lambda \sum_k \sum_l W_{k,l}^2</script>
+
+<script type="math/tex; mode=display">L = \underbrace { \frac{1}{N} \sum_i \sum_{j \neq y_i} \max(0,f_j - f_{y_i} + 1)}_{\text{data loss}} + \lambda \underbrace{\sum_k \sum_l W_{k,l}^2}_{\text{regularization loss}}</script>
+
+<h2 id="cs231n-lecture-4--bp--nn">CS231n Lecture 4 第四个视频 BP &amp; NN</h2>
+
+<p>Chain rule</p>
+
+<p>calc $ f(x,y,z) = (x+y)z $ to understand activations of backprop.</p>
+
+<p>Another large example:</p>
+
+<script type="math/tex; mode=display">f(w,x) = \frac{1}{1+e^{-(w_0 x_0 + w_1 x_1 + w_2)}}</script>
+
+<p>Jacobian Matrix
+Diagonal Sparsity</p>
+
+<h3 id="nn">NN</h3>
+
+<p>超厉害的11行代码实现两层神经网络 <a href="http://iamtrask.github.io/2015/07/12/basic-python-network/">Basic Python Network</a></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">syn0</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>	<span class="c">#Weight  Synapse 突触</span>
+<span class="n">syn1</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">60000</span><span class="p">):</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">syn0</span><span class="p">))))</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span><span class="n">syn1</span><span class="p">))))</span>
+    <span class="n">l2_delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">l2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">l2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">l2</span><span class="p">))</span>
+    <span class="n">l1_delta</span> <span class="o">=</span> <span class="n">l2_delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">syn1</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">l1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">l1</span><span class="p">))</span>
+    <span class="n">syn1</span> <span class="o">+=</span> <span class="n">l1</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l2_delta</span><span class="p">)</span>
+    <span class="n">syn0</span> <span class="o">+=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1_delta</span><span class="p">)</span></code></pre></div>
+
+<p>Cell body : sum &amp;&amp; bias</p>
+
+<h3 id="activation-funtion">Activation funtion</h3>
+
+<p>sigmoid</p>
+
+<p>tanh(x):$ tanh(x) $</p>
+
+<p>ReLU:$max(0,x)$     make your classifier more faster, use as default</p>
+
+<p>Leaky ReLU: $max(0.1 x,x) $</p>
+
+<p>Maxout: $ max(w_1^T x +b_1,w_2^T x +b_2) $</p>
+
+<p>ELU:$ f(x) = \left{\begin{array}{c} 
+x <br />
+\alpha (e^x-1)
+\end{array}
+\right.
+$</p>
+
+<h3 id="nn-1">NN</h3>
+
+<p>数layers时，input layer不算</p>
+
+<p><a href="http://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html">非常有意思的演示</a>，将空间的转变演示出来了</p>
+
+<p>More always better~but you need avoid overfiting</p>
+
+<p>不同的layer不同的function，一般没人这么做</p>
+
+<h2 id="lecture-5-nn-part2">Lecture 5 NN part2</h2>
+
+<p>ConvNets 并不一定需要大量数据—— finetuning</p>
+
+<p>Don’t be overly ambitious.</p>
+
+<h4 id="train-nn">Train NN</h4>
+<p>Loop:</p>
+
+<ol>
+  <li>
+    <p>Sample a batch of data</p>
+  </li>
+  <li>
+    <p>Forward prop it through the graph, get loss</p>
+  </li>
+  <li>
+    <p>Backprop to calculate the gradients</p>
+  </li>
+  <li>
+    <p>Update the parameters using the gradient</p>
+  </li>
+</ol>
+
+<h3 id="training-neural-networks">Training Neural Networks</h3>
+
+<ol>
+  <li>One time setup</li>
+</ol>
+
+<p>activation functions, preprocessing, weight
+initialization, regularization, gradient checking</p>
+
+<ol>
+  <li>Training dynamics</li>
+</ol>
+
+<p>babysitting the learning process,
+parameter updates, hyperparameter optimization</p>
+
+<ol>
+  <li>Evaluation</li>
+</ol>
+
+<p>model ensembles</p>
+
+<h3 id="activation-functions">Activation functions</h3>
+
+<h4 id="sigmoid-funcition">Sigmoid funcition</h4>
+
+<p>[0,1]</p>
+
+<p>Problem: downside
+1. Saturated neurons “kill” the gradients</p>
+
+<p>x 在 -10 ,10之外的时候，好多节点就无法传递BP的gradients了</p>
+
+<ol>
+  <li>Sigmoid outputs are not zero-centered</li>
+</ol>
+
+<p>$ W_i $ Always all positive or all negative</p>
+
+<p>none-zero-centered function converge slower</p>
+
+<ol>
+  <li>exp() is a bit compute expensive</li>
+</ol>
+
+<h4 id="tanhx">Tanh(x)</h4>
+
+<p>[-1,1]
+zero-centered</p>
+
+<p>Problem:
+1. also Saturated</p>
+
+<h3 id="relu">ReLu</h3>
+
+<script type="math/tex; mode=display">f(x) = max(0,x)</script>
+
+<p>2012年的时候才解释==</p>
+
+<ol>
+  <li>Don’t saturate (in +region)</li>
+  <li>Very computationally efficient</li>
+  <li>Converges much faster than sigmoid/tanh</li>
+</ol>
+
+<p>Problems:
+1. not zero-centered output
+2. An annoyance: When x&lt;=0 , gradient is killed.问题是，初始化的时候初始化的不好，最后就会有几个Neuron从来没有Updated过。最后就是相当于Dead Neuron，数据从来没经历过这些节点。（常见解决方法（可能不管用）：初始化的时候with slightly positive bias eg:0.01）</p>
+
+<h3 id="leaky-relu">Leaky ReLU</h3>
+
+<p>为了解决ReLU里面的dead Neuron的问题</p>
+
+<p><script type="math/tex">f(x) = max(0.01 x,x)</script>
+<script type="math/tex">f(x) = max(\alpha x,x)</script></p>
+
+<p>Will not ‘die’</p>
+
+<h3 id="elu-exponential-linear-units">ELU exponential linear units</h3>
+
+<script type="math/tex; mode=display">% <![CDATA[
+f(x) = \begin{cases}
+x,  & \text{if $x > 0$} \\
+\alpha (e^x-1), & \text{if $x \leq 0$}  \\
+\end{cases} %]]></script>
+
+<p>2015年10月份的。。。。。[Clevert et al., 2015] 2页paper来证明。。</p>
+
+<h3 id="maxout">Maxout</h3>
+
+<script type="math/tex; mode=display">max(w_1^T x +b_1,w_2^T x +b_2)</script>
+
+<p>[Goodfellow et al., 2013]</p>
+
+<ul>
+  <li>Does not have the basic form of dot product -&gt; nonlinearity</li>
+  <li>Generalizes ReLU and Leaky ReLU</li>
+  <li>Linear Regime! Does not saturate! Does not die!</li>
+</ul>
+
+<p>Problem: doubles the number of parameters/neuron :(</p>
+
+<h2 id="important">Important!!!</h2>
+
+<ul>
+  <li>Use ReLU. Be careful with your learning rates</li>
+  <li>Try out Leaky ReLU / Maxout / ELU</li>
+  <li>Try out tanh but don’t expect much</li>
+  <li>Don’t use sigmoid</li>
+</ul>
+
+<h2 id="data-preprocessing">Data Preprocessing</h2>
+
+<p>常用的就是Zero-center，一般不用normalize 或者 PCA或者whitening</p>
+
+<p>Not common to normalize variance, to do PCA or whitening</p>
+
+<h3 id="in-practice-for-images-center-only">In practice for Images: center only</h3>
+
+<ul>
+  <li>Subtract the mean image (e.g. AlexNet)</li>
+  <li>Subtract per-channel mean (e.g. VGGNet)</li>
+</ul>
+
+<h2 id="weight-initialization">Weight Initialization</h2>
+
+<p>Tiny number的话，最后W会很小</p>
+
+<p>如果超级混乱的init，disaster</p>
+
+<h4 id="linear-activationsinit">（linear activations）合理的Init</h4>
+
+<p>“Xavier initialization” [Glorot et al., 2010]</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">W</span> <span class="o">=</span> np.random.randn<span class="o">(</span>fan_in,fan_out<span class="o">)</span> / np.sqrt<span class="o">(</span>fan_in<span class="o">)</span>
+<span class="c"># but when using the ReLU nonlinearity it breaks.</span></code></pre></div>
+
+<p>Layer std decrease</p>
+
+<h3 id="relu-1">对于 ReLU</h3>
+
+<p>[He et al., 2015] note additional /2</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">W</span> <span class="o">=</span> np.random.randn<span class="o">(</span>fan_in,fan_out<span class="o">)</span> / np.sqrt<span class="o">(</span>fan_in / 2<span class="o">)</span></code></pre></div>
+
+<h3 id="section">论文</h3>
+
+<p>Understanding the difficulty of training deep feedforward neural networks by Glorot and Bengio, 2010</p>
+
+<p>Exact solutions to the nonlinear dynamics of learning in deep linear neural networks by Saxe et al, 2013</p>
+
+<p>Random walk initialization for training very deep feedforward networks by Sussillo and Abbott, 2014</p>
+
+<p>Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification by He et al., 2015</p>
+
+<p>Data-dependent Initializations of Convolutional Neural Networks by Krähenbühl et al., 2015</p>
+
+<p>All you need is a good init, Mishkin and Matas, 2015</p>
+
+<h3 id="batch-normalization">Batch Normalization</h3>
+
+<p>[Ioffe and Szegedy, 2015]</p>
+
+<p>“you want unit gaussian activations? just make them so.”</p>
+
+<div class="highlight"><pre><code class="language-text" data-lang="text">Usually inserted after Fully Connected(FC) / (or Convolutional, as we’ll see soon) layers, and before nonlinearity.</code></pre></div>
+
+<ul>
+  <li>Improves gradient flow through the network</li>
+  <li>Allows higher learning rates</li>
+  <li><strong>Reduces the strong dependence on initialization</strong></li>
+  <li>Acts as <strong>a form of regularization</strong> in a funny way, and slightly reduces the need for dropout, maybe</li>
+</ul>
+
+<p>可能有30%的速度衰减</p>
+
+<p>什么时候用BN？</p>
+
+<h2 id="babysitting-the-learning-process">Babysitting the Learning Process</h2>
+
+<ol>
+  <li>Preprocess the data</li>
+  <li>Choose the architecture</li>
+</ol>
+
+<p><strong>Make sure that you can overfit very small portion of the training data</strong></p>
+
+<p>Learning rate = 1e-6,直接用眼看</p>
+
+<p><strong>cost: NaN almost always means high learning rate…</strong></p>
+
+<h2 id="hyperparameter-optimization">Hyperparameter Optimization</h2>
+
+<p>change range to calc learning rate</p>
+
+<h4 id="grid-search-vs-random-search">Grid Search vs random Search</h4>
+<p>Always use random search</p>
+
+<h2 id="loss-function">Loss function</h2>
+
+<p><a href="http://lossfunctions.tumblr.com/">http://lossfunctions.tumblr.com/</a></p>
+
+<p>big gap = overfitting =&gt; increase regularization strength?</p>
+
+<p>no gap =&gt; increase model capacity?</p>
+
+<h4 id="track-the-ratio-of-weight-updates--weight-magnitudes">Track the ratio of weight updates / weight magnitudes:</h4>
+
+<p>ratio between the values and updates: ~ 0.0002 / 0.02 = 0.01 (about okay) want this to be somewhere around 0.001 or so</p>
+
+<h2 id="important-1">Important！！</h2>
+
+<ul>
+  <li>Regularization (Dropout etc)</li>
+  <li>Evaluation (Ensembles etc)</li>
+</ul>
+
+<h2 id="lecture-6-nn">Lecture 6 NN</h2>
+
+<p>full saturated or all zeros</p>
+
+<ul>
+  <li>Parameter update schemes</li>
+  <li>Learning rate schedules</li>
+  <li>Dropout</li>
+  <li>Gradient checking</li>
+  <li>Model ensembles</li>
+</ul>
+
+<h3 id="parameter-update">Parameter update</h3>
+
+<p>SGD is so slow</p>
+
+<p>SGD is a very slow progress along flat direction, jitter along steep one</p>
+
+<h4 id="momentum-update">Momentum update</h4>
+
+<p>比SGD快</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">v</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="n">X</span> <span class="o">+=</span> <span class="n">v</span></code></pre></div>
+
+<p>解释</p>
+
+<ul>
+  <li>Physical interpretation as ball rolling down the loss function + friction (mu coefficient).</li>
+  <li>mu = usually ~0.5, 0.9, or 0.99 (Sometimes a</li>
+</ul>
+
+<p>优势</p>
+
+<ul>
+  <li>Allows a velocity to “build up” along shallow directions</li>
+  <li>Velocity becomes damped in steep direction due to quickly changing sign</li>
+</ul>
+
+<h4 id="nesterov-momentum-update-nag">Nesterov Momentum update (nag)</h4>
+
+<p>“lookahead” gradient step (bit different than original)</p>
+
+<script type="math/tex; mode=display">v_t = u v_{t-1} - \epsilon \nabla f(\phi_{t-1})
+\phi_t = \phi_{t-1} - \mu v_{t-1} + ( 1 + \mu ) v_t</script>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">v_prev</span> <span class="o">=</span> <span class="n">v</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dx</span>
+<span class="n">X</span> <span class="o">+=</span> <span class="o">-</span><span class="n">mu</span> <span class="o">*</span> <span class="n">v_prev</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">v</span></code></pre></div>
+
+<p>** Common commercial network!!!!!!!**</p>
+
+<h4 id="adagrad-update">AdaGrad update</h4>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">cache</span> <span class="o">+=</span> <span class="n">dx</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">x</span> <span class="o">+=</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-7</span><span class="p">)</span></code></pre></div>
+
+<p>Added element-wise scaling of the gradient based on the historical  sum of squares in each dimension</p>
+
+<p>相当于自动变化Learning Rate</p>
+
+<p>现实中并不是这么好，到最后可能导致lr更大</p>
+
+<h4 id="rmsprop-update">RMSProp update</h4>
+
+<p>[Tieleman and Hinton, 2012]</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">cache</span> <span class="o">+=</span> <span class="n">decay_rate</span> <span class="o">*</span> <span class="n">cache</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">decay_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="n">x</span> <span class="o">+=</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span><span class="o">+</span><span class="mf">1e-7</span><span class="p">)</span></code></pre></div>
+
+<h4 id="adam-update">Adam update</h4>
+
+<p>合并了RMSProp和Momentum</p>
+
+<p>[Kingma and Ba, 2014]</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">m,v <span class="o">=</span> <span class="c">#... initialize caches to zeros</span>
+<span class="k">for</span> t in xrange<span class="o">(</span>0,big_number<span class="o">)</span>:
+	<span class="nv">dx</span> <span class="o">=</span> <span class="c"># evalute gradient</span>
+	<span class="nv">m</span> <span class="o">=</span> beta1*m + <span class="o">(</span>1-beta1<span class="o">)</span>*dx
+	<span class="nv">v</span> <span class="o">=</span> beta2*v + <span class="o">(</span>1-beta2<span class="o">)</span>*<span class="o">(</span>dx**2<span class="o">)</span>
+	m /<span class="o">=</span> <span class="m">1</span> - beta1**t
+	v /<span class="o">=</span> <span class="m">1</span> - beta2**t
+	x +<span class="o">=</span> - learning_rate * m / <span class="o">(</span>np.sqrt<span class="o">(</span>v<span class="o">)</span> + 1e-7<span class="o">)</span></code></pre></div>
+
+<p>用这个比较多</p>
+
+<h3 id="learning-rate-as-a-hyperparameter">learning rate as a hyperparameter</h3>
+
+<ul>
+  <li>Step decay</li>
+  <li>exponential decay</li>
+  <li>1/t decay</li>
+</ul>
+
+<h2 id="second-order-optimization-methods">Second order optimization methods</h2>
+
+<p>使用了 Hessian，Invert the Hessian($O(n^3)$)</p>
+
+<ul>
+  <li>BGFS  把inverse Hessian with rank 1  优化成 $O(n^2)$</li>
+  <li>L-BGFS  Does not form/store the full inverse Hessian.</li>
+</ul>
+
+<h5 id="l-bgfs">L-BGFS</h5>
+
+<p>very heavy function.
+In practice,we don’t use it.</p>
+
+<ul>
+  <li>Usually works very well in full batch, deterministic mode.  i.e. if you have a single, deterministic f(x) then L-BFGS will probably work very nicely</li>
+  <li>Does not transfer very well to mini-batch setting. Gives bad results. Adapting L-BFGS to large-scale, stochastic setting is an active area of research.</li>
+</ul>
+
+<h3 id="in-practice">In practice</h3>
+
+<ul>
+  <li>Adam is a good default choice in most cases</li>
+  <li>If you can afford to do full batch updates then try out L-BFGS (and don’t forget to disable all sources of noise) 一般不用</li>
+</ul>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>经验</p>
+
+<ol>
+  <li>Train multiple independent models</li>
+  <li>At test time average their results</li>
+</ol>
+
+<p>Enjoy 2% extra performance</p>
+
+<p>??????????????</p>
+
+<ul>
+  <li>can also get a small boost from averaging multiple model checkpoints of a single model.</li>
+  <li>keep track of (and use at test time) a running average parameter vector:</li>
+</ul>
+
+<h2 id="regularizationdropout">Regularization(Dropout)</h2>
+
+<p><img src="/images/20160321-dropout.jpg" alt="dropout" /></p>
+
+<p><img src="/images/20160321-why-use-dropout.jpg" alt="why use dropout" /></p>
+
+<ul>
+  <li>
+    <p>Forces the network to have a redundant representation.</p>
+  </li>
+  <li>
+    <p>Dropout is training a large ensemble of models (that share parameters).</p>
+  </li>
+  <li>
+    <p>Each binary mask is one model, gets trained on only ~one datapoint.</p>
+  </li>
+</ul>
+
+<h4 id="in-practice-1">In practice</h4>
+
+<p>drop的时候要注意</p>
+
+<ul>
+  <li>Leave all input neurons turned on (no dropout).</li>
+  <li>With p=0.5, using all inputs in the forward pass would inflate the activations by 2x from what the network was “used to” during training! =&gt; Have to compensate by scaling the activations back down by 1⁄2</li>
+</ul>
+
+<p>???????</p>
+
+<hr />
+<p>ConvNets Face recognize [Taigman et al. 2014]</p>
+
+<p>Deep Neural Networks Rival the Representation of Primate IT Cortex for Core Visual Object Recognition [Cadieu et al., 2014]</p>
+
+
+    </div>
+
+    
+  <hr>
+
+  <aside id="comments" class="disqus">
+
+    <div class="container">
+      <h3><i class="icon icon-comments-o"></i> Comments</h3>
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+        var disqus_shortname = 'libos';
+        var disqus_identifier = '/blog/2016/03/20/deep-learning-convolutional-neutral-networks-for-visual-recognition-winter-2016---cs231n-notes';
+        var disqus_title = '深度学习卷积神经网络(斯坦福2016 CS231n)笔记';
+        var disqus_url = 'http://next.sh/blog/2016/03/20/deep-learning-convolutional-neutral-networks-for-visual-recognition-winter-2016---cs231n-notes';
+        /*var disqus_developer = 1;*/
+        var disqus_config = function () {
+          this.page.url = disqus_url; // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = disqus_identifier; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+
+      <noscript>
+        Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+      </noscript>
+    </div>
+
+  </aside>
+
+  </div>
+
+</article>
+
+      </div>
+
+      <footer class="site-footer">
+  <div class="container">
+    <ul class="social">
+  <li><a href="http://github.com/libos" target="_blank"><i class="icon icon-github"></i></a></li>
+  <li><a href="http://twitter.com/LiberSnail" target="_blank"><i class="icon icon-twitter"></i></a></li>
+  <li><a href="http://facebook.com/gslipt" target="_blank"><i class="icon icon-facebook"></i></a></li>
+</ul>
+    <p class="txt-medium-gray">
+      <small>&copy;2016 All rights reserved.</small>
+    </p>
+  </div>
+</footer>
+
+
+      
+
+      <script src="/js/jquery-1.11.3.min.js"></script>
+      <script src="/js/highlight.pack.js"></script>
+      <script>
+      hljs.initHighlightingOnLoad();
+      $(document).ready(function() {
+        $('.sliding-panel-button,.sliding-panel-fade-screen,.sliding-panel-close').on('click touchstart',function (e) {
+          $('.sliding-panel-content,.sliding-panel-fade-screen').toggleClass('is-visible');
+          e.preventDefault();
+        });
+      });
+      </script>
+    </main>
+  </body>
+</html>
